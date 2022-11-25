@@ -1,25 +1,12 @@
-const app = require('express');
-const http = require('http').createServer(app);
-var io = require('socket.io')(http);
+const express = require('express');
+const app = express();
+const configRoutes = require('./routes');
 
-io.on('connection', (socket) => {
-  console.log('new client connected', socket.id);
 
-  socket.on('user_join', (name) => {
-    console.log('A user joined their name is ' + name);
-    socket.broadcast.emit('user_join', name);
-  });
+app.use(express.json());
+configRoutes(app);
 
-  socket.on('message', ({name, message}) => {
-    console.log(name, message, socket.id);
-    io.emit('message', {name, message});
-  });
+app.listen(3000, ()=>{
+  console.log(`We've now got a server! on port 3000`);
 
-  socket.on('disconnect', () => {
-    console.log('Disconnect Fired');
-  });
-});
-
-http.listen(4000, () => {
-  console.log(`listening on *:${4000}`);
 });
