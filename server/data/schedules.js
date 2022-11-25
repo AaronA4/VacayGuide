@@ -39,7 +39,7 @@ const exportedMethods = {
         if(newId !== undefined){
             let {_id,email, firstName,lastName,password,schedules,invites} = userThatPosted;
             schedules.ownedSchedules.push(newId.toString());
-            users.updateUser(_id,email,firstName,lastName,password,schedules,invites);
+           await  users.updateUser(_id.toString(),userThatPosted);
             
         }
 

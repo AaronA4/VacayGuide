@@ -43,7 +43,37 @@ const exportedMethods = {
      
       
     },
- 
+    
+    async updateUser(id, updatedUser){
+        id = validation.checkId(id, 'id');
+        updatedUser.firstName = validation.checkString(
+            updatedUser.firstName,
+            'First Name'
+        );
+        updatedUser.lastName = validation.checkString(
+            updatedUser.lastName,
+        )
+
+        let userUpdateInfo = {
+            firstName: updatedUser.firstName,
+            lastName: updatedUser.lastName,
+            password: updatedUser.password,
+            schedules: updatedUser.schedules,
+            invites: updatedUser.invites
+            
+        };
+        const userCollection = await users();
+        const updateInfo = await userCollection.updateOne(
+            {_id: ObjectId(id)},
+            {$set: userUpdateInfo}
+        );
+        if (!updateInfo.matchedCount && !updateInfo.modifiedCount)
+            throw 'Update failed';
+   
+      
+        
+        return await this.getUserById(id);
+    }
 };
 
 module.exports = exportedMethods;
