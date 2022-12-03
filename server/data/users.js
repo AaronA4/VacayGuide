@@ -73,7 +73,16 @@ const exportedMethods = {
       
         
         return await this.getUserById(id);
+    },
+
+    async addInvite(userId, invite){
+        if(userId === undefined) throw "User Id is not provided.";
+        if(invite === undefined) throw "Invite object is not provided.";
+        const userCollection = await users();
+
+        userCollection.updateOne({_id: ObjectId(userId)},{ $addToSet: {invites: invite}});
     }
+    
 };
 
 module.exports = exportedMethods;
