@@ -54,9 +54,108 @@ const exportedMethods = {
 
         if(!schedule) throw 'Schedule not found.';
         return schedule;
-    }
+    },
 
+    async createEvent(userID, scheduleID, name, description, cost, startTime, endTime){
+        userID = validation.checkId(userID, "User ID");
+        scheduleID = validation.checkId(scheduleID, "Schedule ID");
+        name = validation.checkString(name, "Event Name");
+        description = validation.checkString(name, "Event Description");
+        cost = validation.checkCost(cost, "Cost");
+        startTime = validation.checkDate(startTime, "Start Time");
+        endTime = validation.checkDate(startTime, "End Time");
+        if (endTime < startTime) throw `Error: End time must come after start time!`;
+
+        const scheduleCollection = await schedules();
+
+        const schedule = await this.getScheduleById(scheduleID);
+        if(schedule === undefined || schedule === null) throw "Schedule not found with the id";
+
+        const userThatPosted = await users.getUserById(userID);
+        if(userThatPosted === undefined || userThatPosted === null) throw "User not found with the id";
+        if(schedule.creator != userID) throw `User is not the creator of the schedule!`;
+
+        const newEvent = {
+            name: name,
+            description: description,
+            cost: cost,
+            startTime: startTime,
+            endTime: endTime,
+            attendees: []
+        }
+
+        const updateInfo = await scheduleCollection.updateOne(
+            {_id: ObjectId(scheduleID)},
+            {$push: {events: newEvent}}
+        );
+        if (!updateInfo.matchedCount && !updateInfo.modifiedCount) throw 'Update failed';
+
+        return this.getScheduleById(scheduleID);
+    },
+
+    async updateEvent (userID, scheduleID, eventID, name, description, cost, startTime, endTime) {
+        userID = validation.checkId(userID, "User ID");
+        scheduleID = validation.checkId(scheduleID, "Schedule ID");
+        eventID = validation.checkId(eventID, "Event ID");
+
+        const scheduleCollection = await schedules();
+
+        const schedule = await this.getScheduleById(scheduleID);
+        if(schedule === undefined || schedule === null) throw "Schedule not found with the id";
+
+        const userThatPosted = await users.getUserById(userID);
+        if(userThatPosted === undefined || userThatPosted === null) throw "User not found with the id";
+        if(schedule.creator != userID) throw `User is not the creator of the schedule!`;
+
+        const oldEvent = await scheduleCollection.findOne({_id: ObjectId(scheduleID), "events._id": ObjectId(eventID)});
+
+        if (name) {
+            name = validation.checkString(name, "Event Name");
+        }else {
+            name = oldEvent.name;
+        }
+        if (description) {
+            description = validation.checkString(name, "Event Description");
+        }else {
+            description = oldEvent.description;
+        }
+        if(cost) {
+            cost = validation.checkCost(cost, "Cost");
+        }else {
+            cost = oldEvent.cost;
+        }
+        if(startTime) {
+            startTime = validation.checkDate(startTime, "Start Time");
+        }else {
+            startTime = oldEvent.startTime;
+        }
+        if(endTime) {
+            endTime = validation.checkDate(startTime, "End Time");
+        }else {
+            endTime = oldEvent.endTime;
+        }
+        if (endTime < startTime) throw `Error: End time must come after start time!`;
+
+        const updatedEvent = {
+            name: name,
+            description: description,
+            cost: cost,
+            startTime: startTime,
+            endTime: endTime,
+        }
+
+        const updateInfo = await scheduleCollection.updateOne(
+            {_id: ObjectId(scheduleID), "events._id": ObjectId(eventID)},
+            {$set: updatedEvent}
+        );
+        if (!updateInfo.matchedCount && !updateInfo.modifiedCount) throw 'Update failed';
+
+        return this.getScheduleById(scheduleID);
+    },
+    
 }
+
+
 
 
 module.exports = exportedMethods;
