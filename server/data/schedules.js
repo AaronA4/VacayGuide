@@ -13,14 +13,10 @@ const exportedMethods = {
     async addSchedule(name,creatorId,attendees,events){
        
         creatorId = validation.checkId(creatorId,'CreatorID');
-       
-        if(!Array.isArray(attendees)){
-            attendees = [];
-        }
-        if(!Array.isArray(events)){
-            events = [];
-        }
-        
+        name = validation.checkString(name, 'name');
+        attendees = validation.checkAttendees(attendees);
+        events = validation.checkEvents(events);
+      
         const scheduleCollection = await schedules();
 
         const userThatPosted = await users.getUserById(creatorId);
@@ -32,8 +28,8 @@ const exportedMethods = {
             attendees: attendees,
             events: events,
             chat: {}
-
         }
+
         const newInsertInformation = await scheduleCollection.insertOne(newSchedule);
         const newId = newInsertInformation.insertedId;
         if(newId !== undefined){
@@ -46,7 +42,6 @@ const exportedMethods = {
         return await this.getScheduleById(newId.toString());
     },
 
-
     async getScheduleById(id){
         id = validation.checkId(id,'ID');
         const scheduleCollection = await schedules();
@@ -54,6 +49,35 @@ const exportedMethods = {
 
         if(!schedule) throw 'Schedule not found.';
         return schedule;
+    },
+
+    async updateSchedule(id, updatedSchedule) {
+        id = validation.checkId(id, 'id');
+        updatedSchedule.name = validation.checkString(
+            updatedSchedule.name,
+            'Schedule Name'
+        );
+        updatedSchedule.creatorId = validation.checkId(
+            updatedSchedule.creatorId, 
+            'Creator ID'
+        );
+
+        let scheduleUpdateInfo = {
+            name: updatedSchedule.name,
+            creator: updatedSchedule.creatorId,
+            attendees: updatedSchedule.attendees,
+            events: updatedSchedule.events,
+            chat: updatedSchedule.chat
+        };
+
+        const scheduleCollection = await schedules();
+        const updateInfo = await scheduleCollection.updateOne(
+            {_id: ObjectId(id)},
+            {$set: scheduleUpdateInfo}
+        );
+        if (!updateInfo.matchedCount && !updateInfo.modifiedCount) throw 'Update failed.';
+
+        return await this.getScheduleById(id);
     },
 
     async createEvent(userID, scheduleID, name, description, cost, startTime, endTime){
@@ -152,7 +176,6 @@ const exportedMethods = {
 
         return this.getScheduleById(scheduleID);
     },
-    
 }
 
 
