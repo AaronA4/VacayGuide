@@ -99,7 +99,7 @@ router.get('/:scheduleId/chat', async (req,res) => {
     try {
         const schedule = await scheduleData.getScheduleById(req.params.scheduleId);
         const chat = schedule.chat;
-
+        res.send(200).json(chat);
         io.on('connection', (socket) => {
             console.log('New client connected.', socket.id);
 
@@ -119,7 +119,6 @@ router.get('/:scheduleId/chat', async (req,res) => {
                 socket.to(room).emit('disconnect', name);
             });
         });
-
         server.listen(4000, () => {
             console.log(`Listening on *:${4000}`);
         });
