@@ -40,7 +40,6 @@ module.exports = {
     return arr;
   },
 
-<<<<<<< HEAD
   checkCost(num, varName) {
     if (!num) throw `Error: You must supply a ${varName}!`;
     if (isNaN(num)) throw `Error: ${varName} must be a number!`;
@@ -53,7 +52,8 @@ module.exports = {
     if(!(Object.prototype.toString.call(date) === "[object Date]")) throw `Error: ${varName} must be a valid date!`;
     const now = new Date();
     if (date < now) throw `Error: ${varName} cannot be before now!`;
-=======
+  },
+
   checkAttendees(attendees) {
     if (!Array.isArray(attendees)) attendees = [];
     if (attendees.length === 0) return attendees;
@@ -83,13 +83,4 @@ module.exports = {
     return events;
   },
 
-  checkDate(date, varName){
-    date = checkString(date,"date");
-    let reg = /^(0[1-9]|1[0-2])\/(0[1-9]|1\d|2\d|3[01])\/(0[1-9]|1[1-9]|2[1-9])$/;
-    if(!reg.test(date)){
-      throw `${varName} has to be in this format: mm/dd/yy format`;
-    }
->>>>>>> a81971e179316d224ced1c33b3bfdc000d4b5e47
-    return date;
-  }
 };
