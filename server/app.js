@@ -4,6 +4,7 @@ const configRoutes = require('./routes');
 
 
 app.use(express.json());
+app.use(express.urlencoded({extended:true}));
 configRoutes(app);
 
 app.listen(3000, ()=>{

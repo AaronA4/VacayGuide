@@ -38,5 +38,20 @@ module.exports = {
     if (arrayInvalidFlag)
       throw `One or more elements in ${varName} array is not a string or is an empty string`;
     return arr;
+  },
+
+  checkCost(num, varName) {
+    if (!num) throw `Error: You must supply a ${varName}!`;
+    if (isNaN(num)) throw `Error: ${varName} must be a number!`;
+    if (num < 0) throw `Error: ${varName} must be greater than zero!`;
+    return num;
+  },
+
+  checkDate(date, varName) {
+    if(!date) throw `Error: You must supply a ${varName}!`;
+    if(!(Object.prototype.toString.call(date) === "[object Date]")) throw `Error: ${varName} must be a valid date!`;
+    const now = new Date();
+    if (date < now) throw `Error: ${varName} cannot be before now!`;
+    return date;
   }
 };
