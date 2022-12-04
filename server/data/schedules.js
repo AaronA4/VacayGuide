@@ -13,14 +13,10 @@ const exportedMethods = {
     async addSchedule(name,creatorId,attendees,events){
        
         creatorId = validation.checkId(creatorId,'CreatorID');
-       
-        if(!Array.isArray(attendees)){
-            attendees = [];
-        }
-        if(!Array.isArray(events)){
-            events = [];
-        }
-        
+        name = validation.checkString(name, 'name');
+        attendees = validation.checkAttendees(attendees);
+        events = validation.checkEvents(events);
+      
         const scheduleCollection = await schedules();
 
         const userThatPosted = await users.getUserById(creatorId);

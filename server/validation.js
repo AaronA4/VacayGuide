@@ -38,5 +38,43 @@ module.exports = {
     if (arrayInvalidFlag)
       throw `One or more elements in ${varName} array is not a string or is an empty string`;
     return arr;
+  },
+
+  checkAttendees(attendees) {
+    if (!Array.isArray(attendees)) attendees = [];
+    if (attendees.length === 0) return attendees;
+    attendees.forEach((e) => {
+      checkId(e, "AttendeesId");
+    });
+
+    return attendees;
+  },
+
+  checkEvents(events) {
+    if (!Array.isArray(events)) {
+      events = [];
+    }
+    if (events.length !== 0) {
+      events.forEach((e) => {
+        let { eventId, name, description, cost, startTime, endTime, attendees } = e;
+        eventId = checkId(eventId, 'event Id');
+        name = checkString(name, "event name");
+        description = checkString(description, "event description");
+        cost = checkNumber(e.cost);
+        startTime = checkDate(startTime, "event start time");
+        endTime = checkDate(endTime, "event end time");
+        attendees = checkAttendees(attendees);
+      });
+    }
+    return events;
+  },
+
+  checkDate(date, varName){
+    date = checkString(date,"date");
+    let reg = /^(0[1-9]|1[0-2])\/(0[1-9]|1\d|2\d|3[01])\/(0[1-9]|1[1-9]|2[1-9])$/;
+    if(!reg.test(date)){
+      throw `${varName} has to be in this format: mm/dd/yy format`;
+    }
+    return date;
   }
 };
