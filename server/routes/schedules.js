@@ -43,11 +43,14 @@ router.get('/:scheduleId/chat', async (req,res) => {
     };
     // user validation req
     try {
+        const schedule = await scheduleData.getScheduleById(req.params.scheduleId);
+        const chat = schedule.chat;
+
         io.on('connection', (socket) => {
             console.log('New client connected.', socket.id);
 
-            socket.on('user_join', ({name,event}) => {
-                console.log('User '+ name +' has joined room '+ event +'.'); // State may possibly include 'group' variable for different groups going to same event.
+            socket.on('user_join', ({name,room}) => {
+                console.log('User '+ name +' has joined room '+ room +'.'); // State may possibly include 'group' variable for different groups going to same event.
                 socket.join(room);
                 socket.to(room).emit('user_join', name);
             });
