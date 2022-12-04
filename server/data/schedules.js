@@ -32,8 +32,8 @@ const exportedMethods = {
             attendees: attendees,
             events: events,
             chat: {}
-
         }
+
         const newInsertInformation = await scheduleCollection.insertOne(newSchedule);
         const newId = newInsertInformation.insertedId;
         if(newId !== undefined){
@@ -54,8 +54,37 @@ const exportedMethods = {
 
         if(!schedule) throw 'Schedule not found.';
         return schedule;
-    }
+    },
 
+    async updateSchedule(id, updatedSchedule) {
+        id = validation.checkId(id, 'id');
+        updatedSchedule.name = validation.checkString(
+            updatedSchedule.name,
+            'Schedule Name'
+        );
+        updatedSchedule.creatorId = validation.checkId(
+            updatedSchedule.creatorId, 
+            'Creator ID'
+        );
+
+        let scheduleUpdateInfo = {
+            name: updatedSchedule.name,
+            creator: updatedSchedule.creatorId,
+            attendees: updatedSchedule.attendees,
+            events: updatedSchedule.events,
+            chat: updatedSchedule.chat
+        };
+
+        const scheduleCollection = await schedules();
+        const updateInfo = await scheduleCollection.updateOne(
+            {_id: ObjectId(id)},
+            {$set: scheduleUpdateInfo}
+        );
+        if (!updateInfo.matchedCount && !updateInfo.modifiedCount) throw 'Update failed.';
+
+        return await this.getScheduleById(id);
+    }
+    
 }
 
 
