@@ -52,6 +52,35 @@ module.exports = {
     if(!(Object.prototype.toString.call(date) === "[object Date]")) throw `Error: ${varName} must be a valid date!`;
     const now = new Date();
     if (date < now) throw `Error: ${varName} cannot be before now!`;
-    return date;
-  }
+  },
+
+  checkAttendees(attendees) {
+    if (!Array.isArray(attendees)) attendees = [];
+    if (attendees.length === 0) return attendees;
+    attendees.forEach((e) => {
+      checkId(e, "AttendeesId");
+    });
+
+    return attendees;
+  },
+
+  checkEvents(events) {
+    if (!Array.isArray(events)) {
+      events = [];
+    }
+    if (events.length !== 0) {
+      events.forEach((e) => {
+        let { eventId, name, description, cost, startTime, endTime, attendees } = e;
+        eventId = checkId(eventId, 'event Id');
+        name = checkString(name, "event name");
+        description = checkString(description, "event description");
+        cost = checkNumber(e.cost);
+        startTime = checkDate(startTime, "event start time");
+        endTime = checkDate(endTime, "event end time");
+        attendees = checkAttendees(attendees);
+      });
+    }
+    return events;
+  },
+
 };
