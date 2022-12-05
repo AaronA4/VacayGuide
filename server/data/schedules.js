@@ -80,14 +80,27 @@ const exportedMethods = {
         return await this.getScheduleById(id);
     },
 
+    async getEvent(scheduleID, eventID) {
+        scheduleID = validation.checkId(scheduleID, "Schedule ID");
+        eventID = validation.checkId(eventID, "Event ID");
+
+        const scheduleCollection = await schedules();
+
+        const event = scheduleCollection.findOne({_id: ObjectId(scheduleID), "events._id": ObjectId(eventID)});
+
+        if (!event) throw `Error: Event not found`;
+
+        return event;
+    },
+
     async createEvent(userID, scheduleID, name, description, cost, startTime, endTime){
         userID = validation.checkId(userID, "User ID");
         scheduleID = validation.checkId(scheduleID, "Schedule ID");
         name = validation.checkString(name, "Event Name");
-        description = validation.checkString(name, "Event Description");
+        description = validation.checkString(description, "Event Description");
         cost = validation.checkCost(cost, "Cost");
         startTime = validation.checkDate(startTime, "Start Time");
-        endTime = validation.checkDate(startTime, "End Time");
+        endTime = validation.checkDate(endTime, "End Time");
         if (endTime < startTime) throw `Error: End time must come after start time!`;
 
         const scheduleCollection = await schedules();
@@ -139,7 +152,7 @@ const exportedMethods = {
             name = oldEvent.name;
         }
         if (description) {
-            description = validation.checkString(name, "Event Description");
+            description = validation.checkString(description, "Event Description");
         }else {
             description = oldEvent.description;
         }
@@ -154,7 +167,7 @@ const exportedMethods = {
             startTime = oldEvent.startTime;
         }
         if(endTime) {
-            endTime = validation.checkDate(startTime, "End Time");
+            endTime = validation.checkDate(endTime, "End Time");
         }else {
             endTime = oldEvent.endTime;
         }

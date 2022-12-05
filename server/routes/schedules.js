@@ -125,4 +125,73 @@ router.get('/:scheduleId/chat', async (req,res) => {
     }
 });
 
+router.get('/:scheduleId/:eventId', async (req,res) => {
+    let scheduleId;
+    let eventId;
+    try{
+        scheduleId = validation.checkId(req.params.scheduleId, "Schedule Id");
+        eventId = validation.checkId(req.params.eventId, "Event Id");
+    }catch(e){
+        return res.status(400).json({error: e});
+    }
+
+    try{
+        const event =  await scheduleData.getEvent(scheduleId, eventId);
+        res.status(200).json(event);
+    }catch(e) {
+        return res.status(404).json({error: e});
+    }
+});
+
+router.post('/:scheduleId/createEvent', async (req, res) => {
+    let scheduleId;
+    let userId;
+    let name;
+    let description;
+    let cost;
+    let startTime;
+    let endTime;
+
+    try{
+        userId = validation.checkId(req.body.userId, "User ID");
+        scheduleId = validation.checkId(req.params.scheduleId, "Schedule ID");
+        name = validation.checkString(req.body.name, "Event Name");
+        description = validation.checkString(req.body.description, "Event Description");
+        cost = validation.checkCost(req.body.cost, "Cost");
+        startTime = validation.checkDate(req.body.startTime, "Start Time");
+        endTime = validation.checkDate(req.body.endTime, "End Time");
+        if (endTime < startTime) throw `Error: End time must come after start time!`;
+    }catch(e) {
+        return res.status(400).json({error: e});
+    }
+
+    try{
+        const newEvent = await scheduleData.createEvent(userId, scheduleId, name, description, cost, startTime, endTime);
+        return res.status(200).json(newEvent);
+    }catch(e){
+        return res.status(404).json({error: e})
+    }
+});
+
+router.patch('/:scheduleId/:eventId', async (req,res) => {
+    let scheduleId;
+    let eventId;
+    let userId;
+
+    try{
+        userId = validation.checkId(req.body.userId, "User ID");
+        scheduleId = validation.checkId(req.params.scheduleId, "Schedule ID");
+        eventId = validation.checkId(req.params.eventId, "Event ID");
+    }catch(e) {
+        return res.status(400).json({error: e});
+    }
+
+    try{
+        const updatedEvent = await scheduleData.updateEvent(userId, scheduleId, eventId, req.body.name, req.body.description, req.body.cost, req.body.startTime, req.body.endTime);
+        return res.status(200).json(updatedEvent);
+    }catch(e){
+        return res.status(404).json({error: e})
+    }
+});
+
 module.exports = router;
