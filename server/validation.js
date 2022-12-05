@@ -54,6 +54,20 @@ module.exports = {
     if (date < now) throw `Error: ${varName} cannot be before now!`;
   },
 
+  checkEmail(email, varName) {
+    if (!email) throw `Error: You must supply a ${varName}!`;
+    if (typeof email !== 'string') throw `Error: ${varName} must be a string!`;
+    email = email.trim();
+    if (email.length === 0)
+      throw `Error: ${varName} cannot be an empty string or string with just spaces`;
+    if (!isNaN(email))
+      throw `Error: ${email} is not a valid value for ${varName} as it only contains digits`;
+    const regexExp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/gi;
+    if(!regexExp.test(email))
+      throw `Error: ${email} is not a valid email format`;
+    return email;
+  },
+
   checkAttendees(attendees) {
     if (!Array.isArray(attendees)) attendees = [];
     if (attendees.length === 0) return attendees;
