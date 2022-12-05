@@ -9,9 +9,10 @@ async function main() {
     const db = await dbConnection.dbConnection();
     await db.dropDatabase();
   
-    let {createdUser} =  await users.addUser("rahul@xyz.com","Rahul","Ray","rahul@1");
-   
-    await schedules.addSchedule('Long Trip', createdUser._id.toString(),[],[]);
+    let user1 =  await users.addUser("rahul@xyz.com","Rahul","Ray","rahul@1");
+    let user2 = await users.addUser("sam@xyz.com","Sam","Ray","sam@1");
+
+    await schedules.addSchedule('Long Trip', user1.createdUser._id.toString(),[],[]);
     
     
     console.log('Done seeding database');

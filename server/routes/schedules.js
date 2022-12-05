@@ -66,6 +66,20 @@ router.get('/:scheduleId', async (req,res) => {
 
 });
 
+//returns all the attendees that corresponds to this schedule id
+router.get('/:scheduleId/invite/', async (req,res) => {
+    try{
+        let scheduleId = req.params.scheduleId;
+        scheduleId = validation.checkId(scheduleId, "Schedule Id");
+        const schedule = await getScheduleById(scheduleId);
+        if(schedule === undefined) throw `Schedule not found with id of ${scheduleId}`;
+        const attendees = schedule.attendees;
+        if(attendees === undefined) attendees = [];
+        return res.json(attendees);
+    }catch(e){
+        res.status(400).json({error: e});
+    }
+});
 
 //sender Id of invite is unknnown
 router.post('/:scheduleId/invite/:userId', async (req,res) => {
@@ -74,14 +88,20 @@ router.post('/:scheduleId/invite/:userId', async (req,res) => {
         let {scheduleId, userId} = req.params;
         scheduleId = validation.checkId(scheduleId, "Schedule Id");
         userId = validation.checkId(userId, "User Id");
-
-        const schedule = await getScheduleById(scheduleId);
+        let schedule = await scheduleData.getScheduleById(scheduleId);
         if(schedule === undefined) throw `Schedule not found with id of ${scheduleId}`;
-        const user = await getUserById(userId);
+
+        const user = await userData.getUserById(userId);
         if(user === undefined) throw `User not found with id of ${userId}`;
-        const invite = {scheduleId: scheduleId, senderId: "test"};   //need to make change as sender id is unknown
+        const invite = {scheduleId: scheduleId, senderId: schedule.creator};   
+        
+        if(schedule.creator === userId) throw "Schedule creator can't invite themselves";
+        
         await userData.addInvite(userId, invite);
-        const updatedUser = await getUserById(userId);
+
+        await scheduleData.addAttendee(scheduleId, userId);
+        
+        const updatedUser = await userData.getUserById(userId);
         return res.json(updatedUser);
     }catch(e){
         res.status(400).json({error: e});
