@@ -27,7 +27,7 @@ const exportedMethods = {
             creator: creatorId,
             attendees: attendees,
             events: events,
-            chat: {}
+            chat: []
         }
 
         const newInsertInformation = await scheduleCollection.insertOne(newSchedule);
