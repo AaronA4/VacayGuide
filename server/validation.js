@@ -58,7 +58,7 @@ module.exports = {
     if (!Array.isArray(attendees)) attendees = [];
     if (attendees.length === 0) return attendees;
     attendees.forEach((e) => {
-      checkId(e, "AttendeesId");
+      this.checkId(e, "AttendeesId");
     });
 
     return attendees;
@@ -71,13 +71,18 @@ module.exports = {
     if (events.length !== 0) {
       events.forEach((e) => {
         let { eventId, name, description, cost, startTime, endTime, attendees } = e;
-        eventId = checkId(eventId, 'event Id');
-        name = checkString(name, "event name");
-        description = checkString(description, "event description");
-        cost = checkNumber(e.cost);
-        startTime = checkDate(startTime, "event start time");
-        endTime = checkDate(endTime, "event end time");
-        attendees = checkAttendees(attendees);
+        eventId = this.checkId(eventId, 'event Id');
+        name = this.checkString(name, "event name");
+        description = this.checkString(description, "event description");
+        if(cost === undefined || cost === null) throw "cost has to be provided";
+        if(isNaN(cost)) throw "cost has to be a number value";
+        //validation required for start time and end time
+        endTime = new Date(endTime);
+        startTime = new Date(startTime);
+        this.checkDate(endTime);
+        this.checkDate(startTime);
+        if(startTime > endTime) throw "end date has to be greater than start date";
+        attendees = this.checkAttendees(attendees);
       });
     }
     return events;
