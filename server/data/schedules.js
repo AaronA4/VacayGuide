@@ -189,6 +189,16 @@ const exportedMethods = {
 
         return this.getScheduleById(scheduleID);
     },
+
+    async addAttendee(scheduleId, userId){
+        scheduleId = validation.checkId(scheduleId, 'Schedule Id');
+        userId = validation.checkId(userId, 'User Id');
+
+        const schedule = await this.getScheduleById(scheduleId);
+        if(schedule === undefined) throw "Schedule not found";
+        const scheduleCollection = await schedules();
+        await scheduleCollection.updateOne({_id: ObjectId(scheduleId)}, { $addToSet: {attendees: userId}});
+    },
 }
 
 
