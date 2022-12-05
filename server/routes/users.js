@@ -32,7 +32,8 @@ router.post('/login', async (req,res) => {
                 var errorMessage = error.message;
                 throw errorMessage;
             });
-        const user = await userData.getUserByEmail(email)
+        const user = await userData.getUserByEmail(email);
+        req.session.user = user._id;
         res.status(200).json(user);
     }catch(e){
         return res.status(500).json({error: e});
@@ -56,6 +57,7 @@ router.post('/signup', async (req,res) => {
                 throw errorMessage;
             });
         const newUser = await userData.addUser(email,firstName,lastName,password);
+        req.session.user = newUser._id;
         res.status(200).json(newUser);
     }catch(e){
         return res.status(500).json({error: e});
@@ -65,6 +67,7 @@ router.post('/signup', async (req,res) => {
 router.get('/logout', async (req,res) => {
     try {
         firebase.auth().signOut();
+        req.session.destroy();
         res.redirect('/login');
     }catch(e){
         return res.status(500).json({error: e});
