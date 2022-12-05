@@ -21,6 +21,14 @@ const exportedMethods = {
         return user;
     },
 
+    async getUserByEmail(email){
+        id = validation.checkString(email, 'Email');
+        const userCollection = await users();
+        const user = await userCollection.findOne({email: email});
+        if (!user) throw 'User not found';
+        return user;
+    },
+
     async addUser(email,firstName,lastName,password){
     
        const hash = await bcrypt.hash(password, 10);
