@@ -50,7 +50,6 @@ router.post('/', async (req,res) => {
 
 router.get('/:scheduleId', async (req,res) => {
     try{
-        
         let scheduleId = validation.checkId(req.params.scheduleId, "Schedule Id");
         const scheduleCollection = await schedules();
         const schedule = await scheduleCollection.findOne({ _id: id});

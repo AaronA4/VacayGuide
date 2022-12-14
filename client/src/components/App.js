@@ -4,6 +4,7 @@ import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import Account from './Account';
 import Home from './Home';
 import Landing from './Landing';
+import Schedules from './Schedules';
 import Navigation from './Navigation';
 import SignIn from './SignIn';
 import SignUp from './SignUp';
@@ -25,6 +26,9 @@ function App() {
           </Route>
           <Route path='/account' element={<PrivateRoute />}>
             <Route path='/account' element={<Account />} />
+          </Route>
+          <Route path='/schedules' element={<PrivateRoute />}>
+            <Route path='schedules' element={<Schedules />} />
           </Route>
           <Route path='/signin' element={<SignIn />} />
           <Route path='/signup' element={<SignUp />} />
