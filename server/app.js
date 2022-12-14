@@ -1,7 +1,8 @@
 const express = require('express');
 const app = express();
 const configRoutes = require('./routes');
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
+const session = require('express-session');
 
 
 app.use(bodyParser.json());
