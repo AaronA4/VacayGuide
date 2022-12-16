@@ -11,6 +11,7 @@ app.use(bodyParser.urlencoded({extended:true}));
 app.use(session({
   name: 'AuthCookie',
   resave: false,
+  secret: "Secert",
   saveUninitialized: true
 })
 );
