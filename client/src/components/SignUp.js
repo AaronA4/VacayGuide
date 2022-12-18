@@ -18,8 +18,8 @@ function SignUp() {
       await doCreateUserWithEmailAndPassword(
         email.value,
         passwordOne.value,
-        firstName,
-        lastName
+        firstName.value,
+        lastName.value
       );
     } catch (error) {
       alert(error);

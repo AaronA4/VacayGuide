@@ -3,7 +3,18 @@ import axios from 'axios';
 
 async function doCreateUserWithEmailAndPassword(email, password, firstName, lastName) {
   await firebase.auth().createUserWithEmailAndPassword(email, password);
-  firebase.auth().currentUser.updateProfile({firstName: firstName, lastName: lastName});
+  firebase.auth().currentUser.updateProfile({displayName: firstName + " " + lastName});
+  const formData = {
+    email: email,
+    password: password,
+    firstName: firstName,
+    lastName: lastName
+  };
+  const {data} = axios({
+    method: 'post',
+    url: 'http://localhost:3001/signup',
+    data: formData
+  });
 }
 
 async function doChangePassword(email, oldPassword, newPassword) {

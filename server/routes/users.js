@@ -20,19 +20,21 @@ firebase.initializeApp(firebaseConfig);
 router.post('/login', async (req,res) => {
     const loginBody = req.body;
     try{
+        console.log("Here");
         let {email,password} = loginBody;
         email = validation.checkEmail(email, 'User email');
         password = validation.checkString(password, 'User password');
-        firebase.auth().signInWithEmailAndPassword(email,password)
-            .then((userCredential) => {
-                email = userCredential.email;
-                console.log(userCredential.email);
-            })
-            .catch((error) => {
-                var errorMessage = error.message;
-                throw errorMessage;
-            });
+        // firebase.auth().signInWithEmailAndPassword(email,password)
+        //     .then((userCredential) => {
+        //         email = userCredential.email;
+        //         console.log(userCredential.email);
+        //     })
+        //     .catch((error) => {
+        //         var errorMessage = error.message;
+        //         throw errorMessage;
+        //     });
         const user = await userData.getUserByEmail(email);
+        console.log("HERE2");
         req.session.user = user;
         res.status(200).json(user);
     }catch(e){
@@ -44,23 +46,27 @@ router.post('/signup', async (req,res) => {
     const userBody = req.body;
     try{
         console.log("Here");
+        console.log(userBody);
         let {email,firstName,lastName,password} = userBody;
         email = validation.checkEmail(email, 'User email');
         firstName = validation.checkString(firstName, 'User first name');
         lastName = validation.checkString(lastName, 'User last name');
         password = validation.checkString(password, 'User password');
-        firebase.auth().createUserWithEmailAndPassword(email,password)
-            .then((userCredential) => {
-                email = userCredential.email;
-            })
-            .catch((error) => {
-                var errorMessage = error.message;
-                throw errorMessage;
-            });
+        // firebase.auth().createUserWithEmailAndPassword(email,password)
+        //     .then((userCredential) => {
+        //         email = userCredential.email;
+        //     })
+        //     .catch((error) => {
+        //         var errorMessage = error.message;
+        //         throw errorMessage;
+        //     });
+        console.log("HERE2");
         const newUser = await userData.addUser(email,firstName,lastName,password);
         req.session.user = newUser;
+        console.log("HERE3");
         res.status(200).json(newUser);
     }catch(e){
+        console.log(e);
         return res.status(500).json({error: e});
     }
 });
