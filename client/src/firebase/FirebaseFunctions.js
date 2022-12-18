@@ -1,8 +1,20 @@
 import firebase from 'firebase/app';
+import axios from 'axios';
 
-async function doCreateUserWithEmailAndPassword(email, password, displayName) {
+async function doCreateUserWithEmailAndPassword(email, password, firstName, lastName) {
   await firebase.auth().createUserWithEmailAndPassword(email, password);
-  firebase.auth().currentUser.updateProfile({displayName: displayName});
+  firebase.auth().currentUser.updateProfile({displayName: firstName + " " + lastName});
+  const formData = {
+    email: email,
+    password: password,
+    firstName: firstName,
+    lastName: lastName
+  };
+  axios({
+    method: 'post',
+    url: 'http://localhost:3001/signup',
+    data: formData
+  });
 }
 
 async function doChangePassword(email, oldPassword, newPassword) {
@@ -17,16 +29,15 @@ async function doChangePassword(email, oldPassword, newPassword) {
 
 async function doSignInWithEmailAndPassword(email, password) {
   await firebase.auth().signInWithEmailAndPassword(email, password);
-}
-
-async function doSocialSignIn(provider) {
-  let socialProvider = null;
-  if (provider === 'google') {
-    socialProvider = new firebase.auth.GoogleAuthProvider();
-  } else if (provider === 'facebook') {
-    socialProvider = new firebase.auth.FacebookAuthProvider();
-  }
-  await firebase.auth().signInWithPopup(socialProvider);
+  const formData = {
+    email: email,
+    password: password
+  };
+  axios({
+    method: 'post',
+    url: 'http://localhost:3001/login',
+    data: formData
+  });
 }
 
 async function doPasswordReset(email) {
@@ -39,11 +50,14 @@ async function doPasswordUpdate(password) {
 
 async function doSignOut() {
   await firebase.auth().signOut();
+  axios({
+    method: 'get',
+    url: 'http://localhost:3001/logout'
+  });
 }
 
 export {
   doCreateUserWithEmailAndPassword,
-  doSocialSignIn,
   doSignInWithEmailAndPassword,
   doPasswordReset,
   doPasswordUpdate,

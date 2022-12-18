@@ -3,10 +3,19 @@ const app = express();
 const configRoutes = require('./routes');
 const bodyParser = require('body-parser');
 const session = require('express-session');
+const cors = require('cors');
 
+const port = 3001;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
+
+
+app.use(cors({
+  credentials: true,
+  origin: "http://localhost:3000",
+}));
+
 
 app.use(session({
   name: 'AuthCookie',
@@ -15,6 +24,8 @@ app.use(session({
   saveUninitialized: true
 })
 );
+
+// app.use('/schedules',middleware.decodeToken);
 
 app.use(async (req, res, next) => {
   let date = new Date().toUTCString();
@@ -30,7 +41,7 @@ app.use(async (req, res, next) => {
 
 configRoutes(app);
 
-app.listen(5000, ()=>{
-  console.log(`We've now got a server! on port 5000`);
+app.listen(port, ()=>{
+  console.log(`We've now got a server! on port ${port}`);
 
 });

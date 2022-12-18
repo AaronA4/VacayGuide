@@ -13,35 +13,51 @@ var io = require('socket.io')(server);
 const schedules = mongoCollections.schedules;
 
 router.get('/', async (req,res) => {
+  if(!req.session.user) return res.status(403).json("User not logged in.");
     try{
-        const scheduleList = await scheduleData.getAllSchedules();
-        res.json(scheduleList);
+
+				let userObj = req.session.user;
+				let email = validation.checkEmail(userObj.email);
+				const user = await userData.getUserByEmail(email);
+        const scheduleList = user.schedules.ownedSchedules.concat(user.schedules.userSchedules);
+				console.log()
+        res.status(200).json(scheduleList);
     }catch(e){
         res.status(500).json({error: e});
     }
 });
 
 router.post('/', async (req,res) => {
+
+	  if(!req.session.user) return res.status(403).json("User not logged in.");
     const scheduleBody = req.body;
-
-    //validation
-    
     try{
-        if(scheduleBody === undefined) throw "Schedule can't be created because of insufficient data";
-       
-        let {name,creator,attendees,events} = scheduleBody;
-        name = validation.checkString(name, 'schedule name');
-        creator = validation.checkId(creator, 'creator Id');
-        attendees = validation.checkAttendees(attendees);
-        events = validation.checkEvents(events);
+			if(scheduleBody === undefined) throw "Schedule can't be created because of insufficient data";
+
+			let {name,creator,attendees,events} = scheduleBody;
+			let userEmail;
+			if(creator === undefined) {
+				userEmail = scheduleBody.userEmail;
+				const user = await userData.getUserByEmail(userEmail);
+				if(user)
+					creator = user._id.toString();
+
+			}
+			
+			name = validation.checkString(name, 'schedule name');
+			creator = validation.checkId(creator, 'creator Id');
+			attendees = validation.checkAttendees(attendees);
+			events = validation.checkEvents(events);
 
 
-        const newSchedule = await scheduleData.addSchedule(name,creator,attendees,events);
-        res.status(200).json(newSchedule);
+			const newSchedule = await scheduleData.addSchedule(name,creator,attendees,events);
+			res.status(200).json(newSchedule);
 
-    }catch(e){
-        return res.status(500).json({error: e});
-    }
+	}catch(e){
+			return res.status(500).json({error: e});
+	}
+
+ 
 
    
 
