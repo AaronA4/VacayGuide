@@ -20,7 +20,7 @@ firebase.initializeApp(firebaseConfig);
 router.post('/login', async (req,res) => {
     const loginBody = req.body;
     try{
-        console.log("Here");
+        console.log("Login");
         let {email,password} = loginBody;
         email = validation.checkEmail(email, 'User email');
         password = validation.checkString(password, 'User password');
@@ -34,8 +34,9 @@ router.post('/login', async (req,res) => {
         //         throw errorMessage;
         //     });
         const user = await userData.getUserByEmail(email);
-        console.log("HERE2");
         req.session.user = user;
+        console.log("Login user: " + req.session.user.email);
+        console.log(req.session.user);
         res.status(200).json(user);
     }catch(e){
         return res.status(500).json({error: e});
@@ -45,8 +46,7 @@ router.post('/login', async (req,res) => {
 router.post('/signup', async (req,res) => {
     const userBody = req.body;
     try{
-        console.log("Here");
-        console.log(userBody);
+        console.log("Signup");
         let {email,firstName,lastName,password} = userBody;
         email = validation.checkEmail(email, 'User email');
         firstName = validation.checkString(firstName, 'User first name');
@@ -60,10 +60,9 @@ router.post('/signup', async (req,res) => {
         //         var errorMessage = error.message;
         //         throw errorMessage;
         //     });
-        console.log("HERE2");
         const newUser = await userData.addUser(email,firstName,lastName,password);
-        req.session.user = newUser;
-        console.log("HERE3");
+        req.session.user = newUser.createdUser;
+        console.log("Sign up user: " + req.session.user.email);
         res.status(200).json(newUser);
     }catch(e){
         console.log(e);
@@ -73,7 +72,8 @@ router.post('/signup', async (req,res) => {
 
 router.get('/logout', async (req,res) => {
     try {
-        firebase.auth().signOut();
+        // firebase.auth().signOut();
+        console.log("Log out user: " + req.session.user.email);
         req.session.destroy();
         res.redirect('/login');
     }catch(e){

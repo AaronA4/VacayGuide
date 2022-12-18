@@ -10,7 +10,7 @@ async function doCreateUserWithEmailAndPassword(email, password, firstName, last
     firstName: firstName,
     lastName: lastName
   };
-  const {data} = axios({
+  axios({
     method: 'post',
     url: 'http://localhost:3001/signup',
     data: formData
@@ -29,6 +29,15 @@ async function doChangePassword(email, oldPassword, newPassword) {
 
 async function doSignInWithEmailAndPassword(email, password) {
   await firebase.auth().signInWithEmailAndPassword(email, password);
+  const formData = {
+    email: email,
+    password: password
+  };
+  axios({
+    method: 'post',
+    url: 'http://localhost:3001/login',
+    data: formData
+  });
 }
 
 async function doPasswordReset(email) {
@@ -41,6 +50,10 @@ async function doPasswordUpdate(password) {
 
 async function doSignOut() {
   await firebase.auth().signOut();
+  axios({
+    method: 'get',
+    url: 'http://localhost:3001/logout'
+  });
 }
 
 export {

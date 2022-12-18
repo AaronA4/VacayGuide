@@ -12,6 +12,7 @@ export const AuthProvider = ({children}) => {
       if(user){
         console.log(user);
         console.log(user.email);
+        console.log(user.uid);
       }
       setCurrentUser(user);
       setLoadingUser(false);
