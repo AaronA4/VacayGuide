@@ -33,7 +33,7 @@ router.post('/login', async (req,res) => {
                 throw errorMessage;
             });
         const user = await userData.getUserByEmail(email);
-        req.session.user = user._id;
+        req.session.user = user;
         res.status(200).json(user);
     }catch(e){
         return res.status(500).json({error: e});
@@ -43,6 +43,7 @@ router.post('/login', async (req,res) => {
 router.post('/signup', async (req,res) => {
     const userBody = req.body;
     try{
+        console.log("Here");
         let {email,firstName,lastName,password} = userBody;
         email = validation.checkEmail(email, 'User email');
         firstName = validation.checkString(firstName, 'User first name');
@@ -57,7 +58,7 @@ router.post('/signup', async (req,res) => {
                 throw errorMessage;
             });
         const newUser = await userData.addUser(email,firstName,lastName,password);
-        req.session.user = newUser._id;
+        req.session.user = newUser;
         res.status(200).json(newUser);
     }catch(e){
         return res.status(500).json({error: e});

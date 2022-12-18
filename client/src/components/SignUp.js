@@ -76,7 +76,7 @@ function SignUp() {
         </div>
         <div className='form-group'>
           <label>
-            Name:
+            First Name:
             <input
               className='form-control'
               required
@@ -88,7 +88,7 @@ function SignUp() {
         </div>
         <div className='form-group'>
           <label>
-            Name:
+            Last Name:
             <input
               className='form-control'
               required
