@@ -1,8 +1,9 @@
 import firebase from 'firebase/app';
+import axios from 'axios';
 
-async function doCreateUserWithEmailAndPassword(email, password, displayName) {
+async function doCreateUserWithEmailAndPassword(email, password, firstName, lastName) {
   await firebase.auth().createUserWithEmailAndPassword(email, password);
-  firebase.auth().currentUser.updateProfile({displayName: displayName});
+  firebase.auth().currentUser.updateProfile({firstName: firstName, lastName: lastName});
 }
 
 async function doChangePassword(email, oldPassword, newPassword) {
@@ -19,16 +20,6 @@ async function doSignInWithEmailAndPassword(email, password) {
   await firebase.auth().signInWithEmailAndPassword(email, password);
 }
 
-async function doSocialSignIn(provider) {
-  let socialProvider = null;
-  if (provider === 'google') {
-    socialProvider = new firebase.auth.GoogleAuthProvider();
-  } else if (provider === 'facebook') {
-    socialProvider = new firebase.auth.FacebookAuthProvider();
-  }
-  await firebase.auth().signInWithPopup(socialProvider);
-}
-
 async function doPasswordReset(email) {
   await firebase.auth().sendPasswordResetEmail(email);
 }
@@ -43,7 +34,6 @@ async function doSignOut() {
 
 export {
   doCreateUserWithEmailAndPassword,
-  doSocialSignIn,
   doSignInWithEmailAndPassword,
   doPasswordReset,
   doPasswordUpdate,

@@ -2,13 +2,13 @@ import React, {useContext, useState} from 'react';
 import {Navigate} from 'react-router-dom';
 import {doCreateUserWithEmailAndPassword} from '../firebase/FirebaseFunctions';
 import {AuthContext} from '../firebase/Auth';
-import SocialSignIn from './SocialSignIn';
+
 function SignUp() {
   const {currentUser} = useContext(AuthContext);
   const [pwMatch, setPwMatch] = useState('');
   const handleSignUp = async (e) => {
     e.preventDefault();
-    const {displayName, email, passwordOne, passwordTwo} = e.target.elements;
+    const {firstName, lastName, email, passwordOne, passwordTwo} = e.target.elements;
     if (passwordOne.value !== passwordTwo.value) {
       setPwMatch('Passwords do not match');
       return false;
@@ -18,7 +18,8 @@ function SignUp() {
       await doCreateUserWithEmailAndPassword(
         email.value,
         passwordOne.value,
-        displayName
+        firstName,
+        lastName
       );
     } catch (error) {
       alert(error);
@@ -34,18 +35,6 @@ function SignUp() {
       <h1>Sign up</h1>
       {pwMatch && <h4 className='error'>{pwMatch}</h4>}
       <form onSubmit={handleSignUp}>
-        <div className='form-group'>
-          <label>
-            Name:
-            <input
-              className='form-control'
-              required
-              name='displayName'
-              type='text'
-              placeholder='Name'
-            />
-          </label>
-        </div>
         <div className='form-group'>
           <label>
             Email:
@@ -85,12 +74,35 @@ function SignUp() {
             />
           </label>
         </div>
+        <div className='form-group'>
+          <label>
+            Name:
+            <input
+              className='form-control'
+              required
+              name='firstName'
+              type='text'
+              placeholder='Name'
+            />
+          </label>
+        </div>
+        <div className='form-group'>
+          <label>
+            Name:
+            <input
+              className='form-control'
+              required
+              name='lastName'
+              type='text'
+              placeholder='Name'
+            />
+          </label>
+        </div>
         <button id='submitButton' name='submitButton' type='submit'>
           Sign Up
         </button>
       </form>
       <br />
-      <SocialSignIn />
     </div>
   );
 }

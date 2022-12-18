@@ -3,6 +3,7 @@ const app = express();
 const configRoutes = require('./routes');
 const bodyParser = require('body-parser');
 const session = require('express-session');
+const cors = require('cors');
 
 const port = 3001;
 
