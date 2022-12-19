@@ -30,9 +30,13 @@ const exportedMethods = {
     },
 
     async addUser(email,firstName,lastName,password,uid){
-    
+        const userCollection = await users();
+        const user = await userCollection.findOne({email: email});
+        if (user) {
+            user['id'] = user._id;
+            return {userCreated: false, createdUser: user};
+        }
        const hash = await bcrypt.hash(password, 10);
-       const userCollection = await users();
        const newUser = {
             email : email,
             firstName: firstName,
