@@ -23,7 +23,7 @@ router.post('/login', async (req,res) => {
         console.log("Login");
         let {email,password} = loginBody;
         email = validation.checkEmail(email, 'User email');
-        password = validation.checkString(password, 'User password');
+        password = validation.checkString(password, 'User password');   
         // firebase.auth().signInWithEmailAndPassword(email,password)
         //     .then((userCredential) => {
         //         email = userCredential.email;

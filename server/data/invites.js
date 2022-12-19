@@ -5,40 +5,55 @@ const {ObjectId} = require('mongodb');
 const validation = require('../validation');
 
 const exportedmethods = {
-    async getAllInvites(id){
+    
+    /**
+     * Return Invites of the UserId
+     * [{scheduleId:'', senderId: ''}]
+     */
+    async getMyInvites(id){
         const usersData = await users();
-        const parseId = ObjectId(id);
-        let user = await usersData.findOne({_id: parseId});
+        let user = await usersData.findOne({_id: ObjectId(id)});
         return user.invites;
     },
 
-    async addSchedules(userId,scheduleId){
-        
+    /**
+     * *      1. add ScheduleId to userSchedules of userId of loggedIn
+ *      2. add userId to Schedule's Attendee
+ *      3. Remove the Invitation from invites of userId
+     */
+    async approveInvite(userIdStr,scheduleIdStr){
         const userData = await users();
         const scheduleData = await schedules();
-        let parseId = ObjectId(userId);
-        let parseId2 = ObjectId(scheduleId);
-
-        // let updateUser = {};
-        //  if(scheduleId) updateUser.scheduleId = scheduleId;
+        let userId = ObjectId(userIdStr);
+        let scheduleId = ObjectId(scheduleIdStr);
 
         const newUpdatedUser = await userData.updateOne(
-            {_id:parseId},
-            {$addToSet:{"schedules.userSchedules" : scheduleId}}
+            {_id: userId},
+            {$addToSet:{"schedules.userSchedules" : scheduleIdStr}}
         );
 
         const newUpdatedSchedule = await scheduleData.updateOne(
-            {_id:parseId2},
-            {$addToSet:{"attendees" : userId }}
+            {_id: scheduleId},
+            {$addToSet:{"attendees" : userIdStr }}
         );
 
-        if(newUpdatedUser.modifiedCount == 0) throw 'could not update the user';
-        if(newUpdatedSchedule.modifiedCount == 0) throw 'could not update the schedule';
+        const newUpdatedInvites = await userData.updateOne(
+            {_id: userId},
+            { $pull: { "invites" : { "scheduleId": scheduleIdStr } } }
+        );
 
-        const updatedUser = await userData.findOne({_id: parseId});
-        const updatedSchedule = await scheduleData.findOne({_id:parseId2});
-        return updatedUser,updatedSchedule;
+        return ;
+    },
+
+    async denyInvite(userId, scheduleId){
+        const userData = await users();
+        const newUpdatedInvites = await userData.updateOne(
+            {_id: ObjectId(userId)},
+            { $pull: { "invites" : { "scheduleId": scheduleId } } }
+        );
+
+        if(newUpdatedInvites.modifiedCount === 0) return `User - ${userId} Doesn't have matching invite - ${scheduleId}`;
+        else return `User - ${userId} Denied the invite - ${scheduleId}`;
     }
 }
-
 module.exports = exportedmethods;

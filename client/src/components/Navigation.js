@@ -28,6 +28,9 @@ const NavigationAuth = () => {
         <li>
           <SignOutButton />
         </li>
+        <li>
+          <NavLink to='/myInvites'>My Invites</NavLink>
+        </li>
       </ul>
     </nav>
   );
