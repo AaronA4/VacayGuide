@@ -24,7 +24,6 @@ async function main() {
     await db.dropDatabase();
 
 
-    let schedule1 = await schedules.addSchedule('Long Trip', user1.createdUser._id.toString(),[],[]);
     let now = new Date()
     let start = new Date(now.getTime() + 3600000)
     let end = new Date(now.getTime() + 7200000)
@@ -60,6 +59,7 @@ async function main() {
     user2 =  await users.addUser(user.email,user.firstName,user.lastName,user.password,firebase.auth().currentUser.uid);
     await firebase.auth().signOut();
 
+    let schedule1 = await schedules.addSchedule('Long Trip', user1.createdUser._id.toString(),[],[]);
     let event1 = await schedules.createEvent(user1.createdUser._id.toString(), schedule1._id.toString(), "Beach trip", "Trip to the beach", 0, nextMonthStart, nextMonthEnd)
 
 
