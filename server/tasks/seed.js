@@ -1,4 +1,4 @@
-
+require('dotenv').config();
 const dbConnection = require('../config/mongoConnection');
 const data = require('../data/');
 const schedules = data.schedules;
@@ -8,14 +8,13 @@ const users = data.users;
 const invites = data.invites;
 
 const firebase = require('firebase');
-
 var firebaseConfig = {
-    apiKey: "AIzaSyDgAUdZscLzqaQp6KkvlaidA1HfLA1750E",
-    authDomain: "vacayfall22.firebaseapp.com",
-    projectId: "vacayfall22",
-    storageBucket: "vacayfall22.appspot.com",
-    messagingSenderId: "43591241241",
-    appId: "1:43591241241:web:ad956bfef791758acfa488"
+    apiKey: process.env.FIREBASE_API_KEY,
+    authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.FIREBASE_PROJECT_ID,
+    storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.FIREBASE_MESSAGE_SENDER_ID,
+    appId: process.env.FIREBASE_APP_ID
 };
 
 firebase.initializeApp(firebaseConfig);
