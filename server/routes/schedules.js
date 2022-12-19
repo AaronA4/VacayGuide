@@ -67,8 +67,7 @@ router.post('/', async (req,res) => {
 router.get('/:scheduleId', async (req,res) => {
     try{
         let scheduleId = validation.checkId(req.params.scheduleId, "Schedule Id");
-        const scheduleCollection = await schedules();
-        const schedule = await scheduleCollection.findOne({ _id: id});
+        const schedule = await getScheduleById(scheduleId);
 
         if(!schedule) throw `Could not find schedule with id of ${scheduleId}`;
 
@@ -167,7 +166,7 @@ router.get('/:scheduleId/:eventId', async (req,res) => {
     let eventId;
     try{
         scheduleId = validation.checkId(req.params.scheduleId, "Schedule Id");
-        eventId = validation.checkId(req.params.eventId, "Event Id");
+        eventId = validation.checkString(req.params.eventId, "Event Id");
     }catch(e){
         return res.status(400).json({error: e});
     }
@@ -190,7 +189,7 @@ router.post('/:scheduleId/createEvent', async (req, res) => {
     let endTime;
 
     try{
-        userId = validation.checkId(req.body.userId, "User ID");
+        userId = validation.checkEmail(req.body.userId, "User ID");
         scheduleId = validation.checkId(req.params.scheduleId, "Schedule ID");
         name = validation.checkString(req.body.name, "Event Name");
         description = validation.checkString(req.body.description, "Event Description");
@@ -216,15 +215,15 @@ router.patch('/:scheduleId/:eventId', async (req,res) => {
     let userId;
 
     try{
-        userId = validation.checkId(req.body.userId, "User ID");
+        userId = validation.checkEmail(req.body.userId, "User ID");
         scheduleId = validation.checkId(req.params.scheduleId, "Schedule ID");
-        eventId = validation.checkId(req.params.eventId, "Event ID");
+        eventId = validation.checkString(req.params.eventId, "Event ID");
     }catch(e) {
         return res.status(400).json({error: e});
     }
 
     try{
-        const updatedEvent = await scheduleData.updateEvent(userId, scheduleId, eventId, req.body.name, req.body.description, req.body.cost, req.body.startTime, req.body.endTime);
+        const updatedEvent = await scheduleData.updateEvent(userId, scheduleId, eventId, req.body.name, req.body.description, req.body.cost, req.body.startTime, req.body.endTime, req.body.attendees);
         return res.status(200).json(updatedEvent);
     }catch(e){
         return res.status(404).json({error: e})

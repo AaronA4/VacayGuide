@@ -13,7 +13,8 @@ function Schedules() {
     console.log('on load useEffect');
     async function fetchData() {
       try {
-        const { data } = await axios.get('http://localhost:3000/schedules/');
+        setLoading(true);
+        const { data } = await axios.get('http://localhost:3001/schedules/');
         setSchedulesData(data);
         setLoading(false);
       } catch (e) {
