@@ -59,12 +59,12 @@ function Schedule(props) {
     );
   } else {
     return (
-      <div class="content">
+      <div className="content">
         <br />
         <h2>This is where the details of a singular Schedule are displayed.</h2>
         <h2>{scheduleData.name}</h2>
-        <div class="container">
-          <h3 class="container-title">Events</h3>
+        <div className="container">
+          <h3 className="container-title">Events</h3>
           <button onClick={() => setAddBtnToggle(!addBtnToggle)}>Add Event</button>
           <div class="row justify-content-center">
             {list}

@@ -11,31 +11,31 @@ const Navigation = () => {
 
 const NavigationAuth = () => {
   return (
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="#">Vacay Guide</a>
+    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+      <a className="navbar-brand" href="#">Vacay Guide</a>
       <button 
-        class="navbar-toggler" 
+        className="navbar-toggler" 
         type="button" 
         data-toggle="collapse"
         aria-controls="navbarSupportedContent"
         aria-expanded="false"
         aria-label="Toggle Navigation"
       >
-        <span class="navbar-toggler-icon"></span>
+        <span className="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item-active">
-            <NavLink class="nav-link" to='/'>Landing</NavLink>
+      <div className="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul className="navbar-nav mr-auto">
+          <li className="nav-item-active">
+            <NavLink className="nav-link" to='/'>Landing </NavLink>
           </li>
-          <li class="nav-item">
-            <NavLink class="nav-link" to='/home'>Home</NavLink>
+          <li className="nav-item">
+            <NavLink className="nav-link" to='/home'>Home </NavLink>
           </li>
-          <li class="nav-item">
-            <NavLink class="nav-link" to='/account'>Account</NavLink>
+          <li className="nav-item">
+            <NavLink className="nav-link" to='/account'>Account </NavLink>
           </li>
-          <li class="nav-item">
-            <NavLink class="nav-link" to='/schedules'>Schedules</NavLink>
+          <li className="nav-item">
+            <NavLink className="nav-link" to='/schedules'>Schedules </NavLink>
           </li>
           <li>
             <SignOutButton />

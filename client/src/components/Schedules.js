@@ -48,6 +48,7 @@ function Schedules() {
     });
 
   if (loading) {
+    console.log('loading');
     return (
       <div>
         <h2>Loading. . . .</h2>
