@@ -8,9 +8,12 @@ import Schedules from './Schedules';
 import Navigation from './Navigation';
 import SignIn from './SignIn';
 import SignUp from './SignUp';
+import Calendar from './Calendar';
+import Event from './Event';
 import {AuthProvider} from '../firebase/Auth';
 import PrivateRoute from './PrivateRoute';
 import MyInvites from './MyInvites';
+
 function App() {
   return (
     <AuthProvider>
@@ -30,6 +33,8 @@ function App() {
           </Route>
           <Route path='/schedules' element={<PrivateRoute />}>
             <Route path='schedules' element={<Schedules />} />
+            <Route path='/schedules/:scheduleId/calendar' element={<Calendar />} />
+            <Route path='/schedules/:scheduleId/:eventId' element={<Event />} />
           </Route>
           <Route path='/signin' element={<SignIn />} />
           <Route path='/signup' element={<SignUp />} />

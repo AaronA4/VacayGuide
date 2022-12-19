@@ -2,7 +2,7 @@ import React, {useContext} from 'react';
 import {NavLink} from 'react-router-dom';
 import {AuthContext} from '../firebase/Auth';
 import SignOutButton from './SignOut';
-import '../App.css';
+import '../bootstrap/dist/css/bootstrap.css';
 
 const Navigation = () => {
   const {currentUser} = useContext(AuthContext);
@@ -60,7 +60,6 @@ const NavigationNonAuth = () => {
         <li>
           <NavLink to='/signup'>Sign-up</NavLink>
         </li>
-
         <li>
           <NavLink to='/signin'>Sign-In</NavLink>
         </li>
