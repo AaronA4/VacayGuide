@@ -8,7 +8,8 @@ async function doCreateUserWithEmailAndPassword(email, password, firstName, last
     email: email,
     password: password,
     firstName: firstName,
-    lastName: lastName
+    lastName: lastName,
+    uid: firebase.auth().currentUser.uid
   };
   axios({
     method: 'post',
@@ -24,6 +25,16 @@ async function doChangePassword(email, oldPassword, newPassword) {
   );
   await firebase.auth().currentUser.reauthenticateWithCredential(credential);
   await firebase.auth().currentUser.updatePassword(newPassword);
+  const formData = {
+    email: email,
+    oldPassword: oldPassword,
+    newPassword: newPassword
+  };
+  await axios({
+    method: 'post',
+    url: 'http://localhost:3001/changeUserPW',
+    data: formData
+  });
   await doSignOut();
 }
 
