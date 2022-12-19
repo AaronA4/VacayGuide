@@ -2,6 +2,10 @@ import React, {useState, useEffect} from 'react';
 import '../App.css';
 import {Link} from 'react-router-dom';
 import axios from 'axios';
+import Card from 'react-bootstrap/Card';
+import Button from 'react-bootstrap/Button';
+import 'bootstrap/dist/css/bootstrap.css';
+import AddSchedule from './AddSchedule';
 
 function Schedules() {
   const [loading, setLoading] = useState(true);
@@ -27,13 +31,12 @@ function Schedules() {
   const buildCard = (schedule) => {
     return (
       <Link to={`/schedules/${schedule.id}`}>
-        <div id={schedule.id} class="card col-lg-3 col-md-6 col-sm-12">
-          {/* <img class="card-img-top" src="IMG SOURCE HERE" alt="scheduleImg"/> */}
-          <div class="card-body">
-            <h2 class="card-title">{schedule.name}</h2>
-            <span class="card-text">More Info</span>
-          </div>
-        </div>
+        <Card id={schedule.id}>
+          <Card.Body>
+            <Card.Title>{schedule.name}</Card.Title>
+            <Card.Text>More Info</Card.Text>
+          </Card.Body>
+        </Card>
       </Link>
     )
   }
@@ -56,7 +59,9 @@ function Schedules() {
         <br />
         <h1>Current Vacay Schedules</h1>
         <br />
-        <button onClick={()=> setBtnToggle(!addBtnToggle)}>Create Schedule</button>
+        <Button onClick={()=> setBtnToggle(!addBtnToggle)}>Create Schedule</Button>
+        <br />
+        <AddSchedule />
         <br />
         <div class="container">
           <div class="row">

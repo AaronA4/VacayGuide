@@ -13,6 +13,7 @@ import Event from './Event';
 import CreateEvent from './CreateEvent';
 import {AuthProvider} from '../firebase/Auth';
 import PrivateRoute from './PrivateRoute';
+import MyInvites from './MyInvites';
 
 function App() {
   return (
@@ -39,6 +40,8 @@ function App() {
           </Route>
           <Route path='/signin' element={<SignIn />} />
           <Route path='/signup' element={<SignUp />} />
+
+          <Route path='/myInvites' element={<MyInvites />} />
         </Routes>
       </Router>
     </AuthProvider>

@@ -48,6 +48,7 @@ const exportedMethods = {
        const insertInfo  = await userCollection.insertOne((newUser));
        if(insertInfo.insertedCount === 0) throw "Unable to add user";
 
+       newUser['id'] = insertInfo.insertedId;
        return {userCreated: true, createdUser: newUser};
      
       
@@ -101,9 +102,7 @@ const exportedMethods = {
           { _id: ObjectId(userId) },
           { $addToSet: { invites: invite } }
         );
-      },
-
-    
+      }
 };
 
 module.exports = exportedMethods;

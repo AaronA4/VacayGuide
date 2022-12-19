@@ -1,5 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import {Link, useParams} from 'react-router-dom';
+import Card from 'react-bootstrap/Card';
+import Button from 'react-bootstrap/Button';
+import ListGroup from 'react-bootstrap/ListGroup';
+import 'bootstrap/dist/css/bootstrap.css';
 import axios from 'axios';
 import '../App.css';
 
@@ -25,15 +29,7 @@ function Schedule(props) {
     fetchData();
   }, [scheduleId]);
 
-  async function userJoinEvent() {
-    try {
-      const {data} = await axios.post(`http://localhost:3000/${scheduleId}`, {
-        method: 'POST',
-        mode: 'cors',
-        body: scheduleData
-      })
-    }
-  }
+
   const isEmpty = (lst) => {
     if (lst.length === 0) return true;
     else return false;
@@ -41,28 +37,17 @@ function Schedule(props) {
 
   list = 
     scheduleData
-    && scheduleData.events.map((event, index) => {
+    && scheduleData.events.map((event) => {
       return (
-      <div class="card col-lg-3 col-md-6 col-sm-12">
-        <div class="card-body">
-          <h4 class="card-title">{event.name}</h4>
-          <h5 class="card-subtitle">{event.cost}</h5>
-          <p class="card-text">Cost: {event.desc}</p>
-          <p class="card-text">Start: {event.startTime}</p>
-          <p class="card-text">End: {event.endTime}</p>
-          {/* <button onClick={()=> setListBtnToggle(!listBtnToggle)}>Show Attendees</button>
-          {(listBtnToggle && (!isEmpty(event.attendees))) 
-          && event.attendees.map((attendee) => {
-            return (
-              <div>
-                <p>{attendee}</p>
-              </div>
-            )
-          })
-          } */}
-          
-        </div>
-      </div>
+        <Link to={`/schedules/${scheduleId}/${event.id}`}>
+          <Card id = {event.id}>
+            <Card.Body>
+              <Card.Title>{event.name}</Card.Title>
+              <Card.Text>{event.description}</Card.Text>
+              <Card.Text>Cost: {event.cost}</Card.Text>
+            </Card.Body>
+          </Card>
+        </Link>
       )
     })
     

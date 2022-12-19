@@ -2,6 +2,8 @@
 const dbConnection = require('../config/mongoConnection');
 const data = require('../data/');
 const schedules = data.schedules;
+const schedulesData = data.schedules;
+const usersData = data.users;
 const users = data.users;
 const invites = data.invites;
 
@@ -81,8 +83,106 @@ async function main() {
   await dbConnection.closeConnection();
   }
 
+
+  /**
+   * 1. Create Host and Guest - Done
+   * 2. Create Schedule
+   * 3. Create Invites
+   */
+  const invitesSeed = async function() {
+    /**
+     * 1. Create 4 Users (0, 1, 2, 3)
+     * 2. Create Schedule from one User to another
+     */
+     let host1 = {email: "host1@xyz.com", firstName: "Host 1", lastName: "First", password: "Host@1"}
+     // Create User in Firebase 
+      try{
+        await firebase.auth().createUserWithEmailAndPassword(host1.email, host1.password);
+      } catch (e) {
+        if(e.code !== "auth/email-already-in-use"){
+          console.log(e);
+        }
+      }
+      // Add user to Mongo DB
+      await firebase.auth().signInWithEmailAndPassword(host1.email, host1.password);
+      host1 =  await users.addUser(host1.email, host1.firstName, host1.lastName, host1.password, firebase.auth().currentUser.uid);
+      host1 = host1.createdUser;
+      await firebase.auth().signOut();
+      console.log("created Host1");
+
+
+      let guest1 = {email: "guest1@xyz.com",firstName: "Guest 1",lastName: "First",password: "Guest@1"}
+     // Create User in Firebase 
+      try{
+        await firebase.auth().createUserWithEmailAndPassword(guest1.email, guest1.password);
+      } catch (e) {
+        if(e.code !== "auth/email-already-in-use"){
+          console.log(e);
+        }
+      }
+      // Add user to Mongo DB
+      await firebase.auth().signInWithEmailAndPassword(guest1.email, guest1.password);
+      guest1 =  await users.addUser(guest1.email, guest1.firstName, guest1.lastName, guest1.password, firebase.auth().currentUser.uid);
+      guest1 = guest1.createdUser;
+      await firebase.auth().signOut();
+      console.log("created Guest1");
+
+      // Create a schedule by host1
+      const schedule1 = await schedulesData.addSchedule("Holiday Event", host1.id.toString(), [], []);
+      console.log("created Schedule1");
+
+      // Invite 
+      await usersData.addInvite(guest1.id.toString(), {scheduleId: schedule1._id.toString(), senderId: host1.id.toString()});
+      console.log("Invitation Sent");
+
+
+      //Adding New User
+
+      let host2 = {email: "host2@xyz.com", firstName: "Host 2", lastName: "second", password: "Host@1"}
+     // Create User in Firebase 
+      try{
+        await firebase.auth().createUserWithEmailAndPassword(host2.email, host2.password);
+      } catch (e) {
+        if(e.code !== "auth/email-already-in-use"){
+          console.log(e);
+        }
+      }
+      // Add user to Mongo DB
+      await firebase.auth().signInWithEmailAndPassword(host2.email, host2.password);
+      host2 =  await users.addUser(host2.email, host2.firstName, host2.lastName, host2.password, firebase.auth().currentUser.uid);
+      host2 = host2.createdUser;
+      await firebase.auth().signOut();
+      console.log("created host2");
+
+
+      let guest2 = {email: "guest2@xyz.com",firstName: "Guest 1",lastName: "First",password: "Guest@1"}
+     // Create User in Firebase 
+      try{
+        await firebase.auth().createUserWithEmailAndPassword(guest2.email, guest2.password);
+      } catch (e) {
+        if(e.code !== "auth/email-already-in-use"){
+          console.log(e);
+        }
+      }
+      // Add user to Mongo DB
+      await firebase.auth().signInWithEmailAndPassword(guest2.email, guest2.password);
+      guest2 =  await users.addUser(guest2.email, guest2.firstName, guest2.lastName, guest2.password, firebase.auth().currentUser.uid);
+      guest2 = guest2.createdUser;
+      await firebase.auth().signOut();
+      console.log("created guest2");
+
+      // Create a schedule by host2
+      const schedule2 = await schedulesData.addSchedule("Holiday Event", host2.id.toString(), [], []);
+      console.log("created schedule2");
+
+      // Invite 
+      await usersData.addInvite(guest2.id.toString(), {scheduleId: schedule2._id.toString(), senderId: host2.id.toString()});
+      console.log("Invitation Sent");
+  }
+
   try{
-  main();
+    // main();
+    invitesSeed();
   }
   catch(e){
     console.log(e);

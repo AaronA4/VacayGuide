@@ -112,6 +112,9 @@ router.post('/:scheduleId/invite/:userId', async (req,res) => {
         
         await userData.addInvite(userId, invite);
 
+        /**
+         * UserId(Receiver) cannot be added as Attendee during the invite (without receiver's approval)
+         */
         await scheduleData.addAttendee(scheduleId, userId);
         
         const updatedUser = await userData.getUserById(userId);
