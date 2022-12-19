@@ -82,7 +82,6 @@ router.get('/:scheduleId/invite/', async (req,res) => {
 
 //sender Id of invite is unknnown
 router.post('/:scheduleId/invite/:userId', async (req,res) => {
-    
     try{
         let {scheduleId, userId} = req.params;
         scheduleId = validation.checkId(scheduleId, "Schedule Id");
@@ -137,9 +136,6 @@ router.get('/:scheduleId/chat', async (req,res) => {
                 console.log('User '+ name +' has left room '+ room +'.');
                 socket.to(room).emit('disconnect', name);
             });
-        });
-        server.listen(4000, () => {
-            console.log(`Listening on *:${4000}`);
         });
     } catch (e) {
         res.status(400).json({ error: 'Failed connection.' });
