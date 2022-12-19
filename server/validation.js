@@ -41,17 +41,20 @@ module.exports = {
   },
 
   checkCost(num, varName) {
-    if (!num) throw `Error: You must supply a ${varName}!`;
+    if (num == null) throw `Error: You must supply a ${varName}!`;
     if (isNaN(num)) throw `Error: ${varName} must be a number!`;
-    if (num < 0) throw `Error: ${varName} must be greater than zero!`;
+    if (num < 0) throw `Error: ${varName} must be greater than or equal to zero!`;
     return num;
   },
 
   checkDate(date, varName) {
     if(!date) throw `Error: You must supply a ${varName}!`;
     if(!(Object.prototype.toString.call(date) === "[object Date]")) throw `Error: ${varName} must be a valid date!`;
+    if (isNaN(date)) throw `Error: ${varName} is an invalid date!`;
     const now = new Date();
     if (date < now) throw `Error: ${varName} cannot be before now!`;
+
+    return date;
   },
 
   checkEmail(email, varName) {

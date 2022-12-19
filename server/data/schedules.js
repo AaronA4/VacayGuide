@@ -82,19 +82,18 @@ const exportedMethods = {
 
     async getEvent(scheduleID, eventID) {
         scheduleID = validation.checkId(scheduleID, "Schedule ID");
-        eventID = validation.checkId(eventID, "Event ID");
+        eventID = validation.checkString(eventID, "Event ID");
 
         const scheduleCollection = await schedules();
-
-        const event = scheduleCollection.findOne({_id: ObjectId(scheduleID), "events._id": ObjectId(eventID)});
+        const event = await scheduleCollection.findOne({_id: ObjectId(scheduleID)}, {projection: {events: {$elemMatch: {name: eventID}}}});
 
         if (!event) throw `Error: Event not found`;
 
-        return event;
+        return event.events[0];
     },
 
     async createEvent(userID, scheduleID, name, description, cost, startTime, endTime){
-        userID = validation.checkId(userID, "User ID");
+        userID = validation.checkEmail(userID, "User ID");
         scheduleID = validation.checkId(scheduleID, "Schedule ID");
         name = validation.checkString(name, "Event Name");
         description = validation.checkString(description, "Event Description");
@@ -108,6 +107,10 @@ const exportedMethods = {
         const schedule = await this.getScheduleById(scheduleID);
         if(schedule === undefined || schedule === null) throw "Schedule not found with the id";
 
+        for (let event of schedule.events) {
+            if(name === event.name) throw "Events in the same schedule cannot have the same name";
+        }
+
         const userThatPosted = await users.getUserById(userID);
         if(userThatPosted === undefined || userThatPosted === null) throw "User not found with the id";
         if(schedule.creator != userID) throw `User is not the creator of the schedule!`;
@@ -116,8 +119,8 @@ const exportedMethods = {
             name: name,
             description: description,
             cost: cost,
-            startTime: startTime,
-            endTime: endTime,
+            startTime: startTime.getTime(),
+            endTime: endTime.getTime(),
             attendees: []
         }
 
@@ -130,22 +133,22 @@ const exportedMethods = {
         return this.getScheduleById(scheduleID);
     },
 
-    async updateEvent (userID, scheduleID, eventID, name, description, cost, startTime, endTime) {
-        userID = validation.checkId(userID, "User ID");
+    async updateEvent (userID, scheduleID, eventID, name, description, cost, startTime, endTime, attendees) {
+        userID = validation.checkEmail(userID, "User ID");
         scheduleID = validation.checkId(scheduleID, "Schedule ID");
-        eventID = validation.checkId(eventID, "Event ID");
+        eventID = validation.checkString(eventID, "Event ID");
 
         const scheduleCollection = await schedules();
 
         const schedule = await this.getScheduleById(scheduleID);
         if(schedule === undefined || schedule === null) throw "Schedule not found with the id";
 
-        const userThatPosted = await users.getUserById(userID);
+        const userThatPosted = await users.getUserByEmail(userID);
         if(userThatPosted === undefined || userThatPosted === null) throw "User not found with the id";
-        if(schedule.creator != userID) throw `User is not the creator of the schedule!`;
+        if(!schedule.attendees.includes(userID) && !(schedule.creator == userThatPosted._id.toString())) throw `User is not invited to the schedule!`;
 
-        const oldEvent = await scheduleCollection.findOne({_id: ObjectId(scheduleID), "events._id": ObjectId(eventID)});
-
+        const oldEvent = await this.getEvent(scheduleID, eventID);
+        
         if (name) {
             name = validation.checkString(name, "Event Name");
         }else {
@@ -172,6 +175,15 @@ const exportedMethods = {
             endTime = oldEvent.endTime;
         }
         if (endTime < startTime) throw `Error: End time must come after start time!`;
+        if(attendees){
+            for (let x in attendees) {
+                attendees[x] = validation.checkEmail(attendees[x],"Attendees");
+            }
+        }else {
+            attendees = oldEvent.attendees;
+        }
+
+
 
         const updatedEvent = {
             name: name,
@@ -179,12 +191,14 @@ const exportedMethods = {
             cost: cost,
             startTime: startTime,
             endTime: endTime,
+            attendees: attendees
         }
 
         const updateInfo = await scheduleCollection.updateOne(
-            {_id: ObjectId(scheduleID), "events._id": ObjectId(eventID)},
-            {$set: updatedEvent}
+            {_id: ObjectId(scheduleID), "events.name": eventID},
+            {$set: {"events.$": updatedEvent}}
         );
+
         if (!updateInfo.matchedCount && !updateInfo.modifiedCount) throw 'Update failed';
 
         return this.getScheduleById(scheduleID);
