@@ -24,11 +24,13 @@ router.get('/', async(req,res)=>{
          * TODO: Validations Missing
          */
         // const id = req.session.id;
-        const user = await usersData.getUserByEmail(req.session.user.email);
-        const id = user._id.toString();
+        console.log(req.headers);
+        const email = req.headers.email;
 
         // Retrieve my Invites
-        const myInvites = await invitesData.getMyInvites(id);
+        const user = await usersData.getUserByEmail(email);
+        const myInvites = user.invites;
+
 
         const invitesList = [];
 
@@ -62,7 +64,9 @@ router.put('/:scheduleId/approve', async(req,res)=>{
         /**
          * TODO: Validations Missing
          */
-         const user = await usersData.getUserByEmail(req.session.user.email);
+        console.log(req.headers);
+         const email = req.headers.email;
+         const user = await usersData.getUserByEmail(email);
          const userId = user._id.toString();
         const scheduleId = req.params.scheduleId;
         await invitesData.approveInvite(userId, scheduleId);
@@ -83,7 +87,8 @@ router.put('/:scheduleId/deny',async(req,res)=>{
         /**
          * TODO: Validations Missing
          */
-         const user = await usersData.getUserByEmail(req.session.user.email);
+         const email = req.headers.email;
+         const user = await usersData.getUserByEmail(email);
          const userId = user._id.toString();
         const scheduleId = req.params.scheduleId;
         const message = await invitesData.denyInvite(userId, scheduleId);
