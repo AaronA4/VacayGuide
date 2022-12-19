@@ -7,7 +7,6 @@ import Button from 'react-bootstrap/Button';
 import ListGroup from 'react-bootstrap/ListGroup';
 import {AuthContext} from '../firebase/Auth';
 import 'bootstrap/dist/css/bootstrap.css';
-import ListGroupItem from 'react-bootstrap/esm/ListGroupItem';
 
 function Event () {
     const [loading, setLoading] = useState(true);
@@ -88,7 +87,7 @@ function Event () {
                     <Card.Text>Start Time: {new Date(eventData.startTime).toLocaleString()}</Card.Text>
                     <Card.Text>End Time: {new Date(eventData.endTime).toLocaleString()}</Card.Text>
                     <ListGroup>Attendees:
-                        {() => buildAttendees(eventData.attendees)}
+                        {buildAttendees(eventData.attendees)}
                     </ListGroup>
                     <br/>
                     {!attending && <Button onClick={() => join(eventData)}>Join Event</Button>}

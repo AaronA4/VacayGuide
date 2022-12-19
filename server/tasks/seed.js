@@ -1,4 +1,4 @@
-
+require('dotenv').config();
 const dbConnection = require('../config/mongoConnection');
 const data = require('../data/');
 const schedules = data.schedules;
@@ -8,14 +8,13 @@ const users = data.users;
 const invites = data.invites;
 
 const firebase = require('firebase');
-
 var firebaseConfig = {
-    apiKey: "AIzaSyDgAUdZscLzqaQp6KkvlaidA1HfLA1750E",
-    authDomain: "vacayfall22.firebaseapp.com",
-    projectId: "vacayfall22",
-    storageBucket: "vacayfall22.appspot.com",
-    messagingSenderId: "43591241241",
-    appId: "1:43591241241:web:ad956bfef791758acfa488"
+    apiKey: process.env.FIREBASE_API_KEY,
+    authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.FIREBASE_PROJECT_ID,
+    storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.FIREBASE_MESSAGE_SENDER_ID,
+    appId: process.env.FIREBASE_APP_ID
 };
 
 firebase.initializeApp(firebaseConfig);
@@ -26,7 +25,6 @@ async function main() {
     await db.dropDatabase();
 
 
-    let schedule1 = await schedules.addSchedule('Long Trip', user1.createdUser._id.toString(),[],[]);
     let now = new Date()
     let start = new Date(now.getTime() + 3600000)
     let end = new Date(now.getTime() + 7200000)
@@ -62,6 +60,7 @@ async function main() {
     user2 =  await users.addUser(user.email,user.firstName,user.lastName,user.password,firebase.auth().currentUser.uid);
     await firebase.auth().signOut();
 
+    let schedule1 = await schedules.addSchedule('Long Trip', user1.createdUser._id.toString(),[],[]);
     let event1 = await schedules.createEvent(user1.createdUser._id.toString(), schedule1._id.toString(), "Beach trip", "Trip to the beach", 0, nextMonthStart, nextMonthEnd)
 
 

@@ -10,6 +10,8 @@ import SignIn from './SignIn';
 import SignUp from './SignUp';
 import Calendar from './Calendar';
 import Event from './Event';
+import CreateEvent from './CreateEvent';
+import EditEvent from './EditEvent';
 import {AuthProvider} from '../firebase/Auth';
 import PrivateRoute from './PrivateRoute';
 import MyInvites from './MyInvites';
@@ -35,6 +37,8 @@ function App() {
             <Route path='schedules' element={<Schedules />} />
             <Route path='/schedules/:scheduleId/calendar' element={<Calendar />} />
             <Route path='/schedules/:scheduleId/:eventId' element={<Event />} />
+            <Route path='/schedules/:scheduleId/calendar/createEvent' element={<CreateEvent />} />
+            <Route path='/schedules/:scheduleId/calendar/editEvent/:eventId' element={<EditEvent />} />
           </Route>
           <Route path='/signin' element={<SignIn />} />
           <Route path='/signup' element={<SignUp />} />

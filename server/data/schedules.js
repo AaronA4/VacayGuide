@@ -112,9 +112,9 @@ const exportedMethods = {
             if(name === event.name) throw "Events in the same schedule cannot have the same name";
         }
 
-        const userThatPosted = await users.getUserById(userID);
+        const userThatPosted = await users.getUserByEmail(userID);
         if(userThatPosted === undefined || userThatPosted === null) throw "User not found with the id";
-        if(schedule.creator != userID) throw `User is not the creator of the schedule!`;
+        if(schedule.creator != userThatPosted._id) throw `User is not the creator of the schedule!`;
 
         const newEvent = {
             name: name,
@@ -166,11 +166,13 @@ const exportedMethods = {
             cost = oldEvent.cost;
         }
         if(startTime) {
+            startTime = new Date(startTime);
             startTime = validation.checkDate(startTime, "Start Time");
         }else {
             startTime = oldEvent.startTime;
         }
         if(endTime) {
+            endTime = new Date(endTime);
             endTime = validation.checkDate(endTime, "End Time");
         }else {
             endTime = oldEvent.endTime;
