@@ -112,6 +112,9 @@ router.post('/:scheduleId/invite/:userId', async (req,res) => {
         
         await userData.addInvite(userId, invite);
 
+        /**
+         * UserId(Receiver) cannot be added as Attendee during the invite (without receiver's approval)
+         */
         await scheduleData.addAttendee(scheduleId, userId);
         
         const updatedUser = await userData.getUserById(userId);
@@ -190,8 +193,10 @@ router.post('/:scheduleId/createEvent', async (req, res) => {
         name = validation.checkString(req.body.name, "Event Name");
         description = validation.checkString(req.body.description, "Event Description");
         cost = validation.checkCost(req.body.cost, "Cost");
-        startTime = validation.checkDate(req.body.startTime, "Start Time");
-        endTime = validation.checkDate(req.body.endTime, "End Time");
+        if (req.body.startTime) startTime = new Date(req.body.startTime);
+        startTime = validation.checkDate(startTime, "Start Time");
+        if (req.body.endTime) endTime = new Date(req.body.endTime);
+        endTime = validation.checkDate(endTime, "End Time");
         if (endTime < startTime) throw `Error: End time must come after start time!`;
     }catch(e) {
         return res.status(400).json({error: e});
