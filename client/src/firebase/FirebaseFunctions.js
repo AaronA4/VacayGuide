@@ -25,6 +25,16 @@ async function doChangePassword(email, oldPassword, newPassword) {
   );
   await firebase.auth().currentUser.reauthenticateWithCredential(credential);
   await firebase.auth().currentUser.updatePassword(newPassword);
+  const formData = {
+    email: email,
+    oldPassword: oldPassword,
+    newPassword: newPassword
+  };
+  await axios({
+    method: 'post',
+    url: 'http://localhost:3001/changeUserPW',
+    data: formData
+  });
   await doSignOut();
 }
 

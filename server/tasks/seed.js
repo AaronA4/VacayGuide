@@ -23,6 +23,15 @@ firebase.initializeApp(firebaseConfig);
 async function main() {
   try{
     const db = await dbConnection.dbConnection();
+    await db.dropDatabase();
+
+
+    let schedule1 = await schedules.addSchedule('Long Trip', user1.createdUser._id.toString(),[],[]);
+    let now = new Date()
+    let start = new Date(now.getTime() + 3600000)
+    let end = new Date(now.getTime() + 7200000)
+    let nextMonthStart = new Date(1674044090000);
+    let nextMonthEnd = new Date(1674047690000)
 
     let user1 = {email: "rahul@xyz.com",firstName: "Rahul",lastName: "Ray",password: "rahul@1"}
     let user2 = {email: "sam@xyz.com",firstName: "Sam",lastName: "Ray",password: "same@1"}
@@ -53,7 +62,9 @@ async function main() {
     user2 =  await users.addUser(user.email,user.firstName,user.lastName,user.password,firebase.auth().currentUser.uid);
     await firebase.auth().signOut();
 
-    // await schedules.addSchedule('Long Trip', user1.createdUser._id.toString(),[],[]);
+    let event1 = await schedules.createEvent(user1.createdUser._id.toString(), schedule1._id.toString(), "Beach trip", "Trip to the beach", 0, nextMonthStart, nextMonthEnd)
+
+
 
     // let invite = {
     //   senderId: "638e235b97ea22d6e1b281ad",
