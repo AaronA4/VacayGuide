@@ -29,7 +29,7 @@ const exportedMethods = {
         return user;
     },
 
-    async addUser(email,firstName,lastName,password){
+    async addUser(email,firstName,lastName,password,uid){
     
        const hash = await bcrypt.hash(password, 10);
        const userCollection = await users();
@@ -38,6 +38,7 @@ const exportedMethods = {
             firstName: firstName,
             lastName: lastName,
             password: hash,
+            uid: uid,
             schedules: {
                 ownedSchedules: [],
                 userSchedules: []
@@ -53,7 +54,7 @@ const exportedMethods = {
     },
     
     async updateUser(id, userObj){
-        let {_id, firstName, lastName, password, schedules, invites} = userObj;
+        let {_id, firstName, lastName, password, schedules, invites, uid} = userObj;
         id = validation.checkId(id, "id");
         firstName = validation.checkString(firstName, "First Name");
         lastName = validation.checkString(lastName, "Last Name");
@@ -64,6 +65,7 @@ const exportedMethods = {
             lastName: lastName,
             password: password,
             schedules: schedules,
+            uid: uid,
             invites: invites
         };
         const userCollection = await users();

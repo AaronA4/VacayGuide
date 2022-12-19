@@ -8,7 +8,8 @@ async function doCreateUserWithEmailAndPassword(email, password, firstName, last
     email: email,
     password: password,
     firstName: firstName,
-    lastName: lastName
+    lastName: lastName,
+    uid: firebase.auth().currentUser.uid
   };
   axios({
     method: 'post',

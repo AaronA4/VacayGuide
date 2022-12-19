@@ -47,7 +47,7 @@ router.post('/signup', async (req,res) => {
     const userBody = req.body;
     try{
         console.log("Signup");
-        let {email,firstName,lastName,password} = userBody;
+        let {email,firstName,lastName,password,uid} = userBody;
         email = validation.checkEmail(email, 'User email');
         firstName = validation.checkString(firstName, 'User first name');
         lastName = validation.checkString(lastName, 'User last name');
@@ -60,7 +60,7 @@ router.post('/signup', async (req,res) => {
         //         var errorMessage = error.message;
         //         throw errorMessage;
         //     });
-        const newUser = await userData.addUser(email,firstName,lastName,password);
+        const newUser = await userData.addUser(email,firstName,lastName,password,uid);
         req.session.user = newUser.createdUser;
         console.log("Sign up user: " + req.session.user.email);
         res.status(200).json(newUser);
