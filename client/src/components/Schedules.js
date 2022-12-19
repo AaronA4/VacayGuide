@@ -30,8 +30,8 @@ function Schedules() {
   
   const buildCard = (schedule) => {
     return (
-      <Link to={`/schedules/${schedule.id}`}>
-        <Card id={schedule.id}>
+      <Link to={`/schedules/${schedule._id}`}>
+        <Card id={schedule._id}>
           <Card.Body>
             <Card.Title>{schedule.name}</Card.Title>
             <Card.Text>More Info</Card.Text>

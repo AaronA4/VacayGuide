@@ -87,11 +87,12 @@ function CreateEvent() {
           headers: {'Content-Type' : 'application/json'},
           data: body
         })
+        
+        navigate('/schedules/' + scheduleId + '/calendar');
       }catch(e) {
-        setCustomError(e);
+        setCustomError(e.response.statusText);
       }
 
-      navigate('/schedules/' + scheduleId + '/calendar');
     }
 
     setValidated(true);

@@ -12,10 +12,12 @@ function EditEvent() {
   const [error, setError] = useState(false);
   const [customError, setCustomError] = useState(undefined);
   const [scheduleData, setScheduleData] = useState(undefined);
+  const [eventData, setEventData] = useState(undefined)
   const [validated, setValidated] = useState(false);
   const {currentUser} = useContext(AuthContext);
   const navigate = useNavigate();
   let {scheduleId, eventId} = useParams();
+
 
   useEffect(() => {
     console.log('on load useEffect');
@@ -25,6 +27,7 @@ function EditEvent() {
         setError(false);
         const { data } = await axios.get('http://localhost:3001/schedules/' + scheduleId);
         setScheduleData(data);
+        setEventData(data.events.find(event => event.name == eventId));
         setLoading(false);
       } catch (e) {
         setError(true);
@@ -46,8 +49,6 @@ function EditEvent() {
     let startTime;
     let endTime;
 
-    let eventData = scheduleData.events.find(event => event.name == eventId);
-
     try{
       if (form.name.value) {
         name = checkString(form.name.value, 'Name');
@@ -60,14 +61,16 @@ function EditEvent() {
       if (form.startTime.value) {
         startTime = new Date(form.startTime.value);
         startTime = checkDate(startTime, 'Start Time');
+        startTime = startTime.getTime();
       }
       if (form.endTime.value) {
         endTime = new Date(form.endTime.value);
         endTime = checkDate(endTime, 'End Time');
+        endTime = endTime.getTime();
       }
-      if (form.startTime.value && form.endTime.value && endTime.getTime() <= startTime.getTime()) throw 'Error: End time cannot happen before or at the same time as start time';
-      if (form.startTime.value && !form.endTime.value && eventData.endTime <= startTime.getTime()) throw 'Error: End time cannot happen before or at the same time as start time';
-      if (!form.startTime.value && form.endTime.value && endTime.getTime() <= eventData.startTime) throw 'Error: End time cannot happen before or at the same time as start time';
+      if (form.startTime.value && form.endTime.value && endTime <= startTime) throw 'Error: End time cannot happen before or at the same time as start time';
+      if (form.startTime.value && !form.endTime.value && eventData.endTime <= startTime) throw 'Error: End time cannot happen before or at the same time as start time';
+      if (!form.startTime.value && form.endTime.value && endTime <= eventData.startTime) throw 'Error: End time cannot happen before or at the same time as start time';
     }catch(e) {
       flag = false;
       setCustomError(e);
@@ -79,23 +82,23 @@ function EditEvent() {
         name: name,
         description: description,
         cost: cost,
-        startTime: startTime.getTime(),
-        endTime: endTime.getTime()
+        startTime: startTime,
+        endTime: endTime
       }; 
 
       try {
         let newEvent = await axios({
-          method: 'post',
-          url: '/schedules/' + scheduleId + '/createEvent',
+          method: 'patch',
+          url: '/schedules/' + scheduleId + '/' + eventId,
           baseURL: 'http://localhost:3001',
           headers: {'Content-Type' : 'application/json'},
           data: body
         })
-      }catch(e) {
-        setCustomError(e);
-      }
 
-      navigate('/schedules/' + scheduleId + '/calendar');
+        navigate('/schedules/' + scheduleId + '/' + eventId);
+      }catch(e) {
+        setCustomError(e.response.statusText);
+      }
     }
 
     setValidated(true);
@@ -109,13 +112,13 @@ function EditEvent() {
       return (
         <div>
           <p>Edit Event</p>
-          {customError && <p variant='warning'>{customError}</p>}
+          {customError && <p>{customError}</p>}
           <Form noValidate validated={validated} onSubmit={handleSubmit}>
             <Form.Group className="mb-3" controlId="name">
               <Form.Label>Name</Form.Label>
               <Form.Control 
                 type="text" 
-                placeholder="Enter name"
+                placeholder={eventData.name}
               />
             </Form.Group>
 
@@ -124,23 +127,29 @@ function EditEvent() {
               <Form.Control
                 as="textarea" 
                 rows={3} 
-                placeholder="Enter description" 
+                placeholder={eventData.description}
               />   
              </Form.Group>
 
             <Form.Group className="mb-3" controlId="cost">
               <Form.Label>Cost</Form.Label>
-              <Form.Control type="number" placeholder="Enter cost" />
+              <Form.Control type="number" placeholder={eventData.cost} />
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="startTime">
               <Form.Label>Start Time</Form.Label>
-              <Form.Control type="datetime-local" placeholder="Enter start time" />
+              <Form.Control type="datetime-local" placeholder={eventData.startTime} />
+              <Form.Text className="text-muted">
+                Current: {new Date(eventData.startTime).toLocaleString()}
+              </Form.Text>
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="endTime">
               <Form.Label>End Time</Form.Label>
-              <Form.Control type="datetime-local" placeholder="Enter end time" />
+              <Form.Control type="datetime-local" placeholder={eventData.endTime} />
+              <Form.Text className="text-muted">
+                Current: {new Date(eventData.endTime).toLocaleString()}
+              </Form.Text>
             </Form.Group>
 
             <Form.Group className="mb-3" controlId="image">
