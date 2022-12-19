@@ -1,6 +1,7 @@
 const mongoCollections = require('../config/mongoCollections');
 const  schedules = mongoCollections.schedules;
 const  users = mongoCollections.users;
+const usersData = require('../data').users;
 const {ObjectId} = require('mongodb');
 const validation = require('../validation');
 
@@ -10,9 +11,8 @@ const exportedmethods = {
      * Return Invites of the UserId
      * [{scheduleId:'', senderId: ''}]
      */
-    async getMyInvites(id){
-        const usersData = await users();
-        let user = await usersData.findOne({_id: ObjectId(id)});
+    async getMyInvites(email){
+        let user = await usersData.getUserByEmail(email);
         return user.invites;
     },
 
