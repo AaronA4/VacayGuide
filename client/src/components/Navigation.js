@@ -41,6 +41,9 @@ const NavigationAuth = () => {
           <li className="nav-item">
             <NavLink className="nav-link" to='/myInvites'>My Invites</NavLink>
           </li>
+          <li className="nav-item">
+            <NavLink className="nav-link" to='/users'>Users</NavLink>
+          </li>
         </ul>
         <div className="nav-signout me-2">
           <SignOutButton />
