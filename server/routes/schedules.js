@@ -20,9 +20,8 @@ const path = require('path')
 router.get('/', async (req,res) => {
   if(!req.session.user) return res.status(403).json("User not logged in.");
     try{
-
-				let userObj = req.session.user;
-				let email = validation.checkEmail(userObj.email);
+	    
+				let email = validation.checkEmail(req.session.email);
 				const user = await userData.getUserByEmail(email);
         const scheduleList = user.schedules.ownedSchedules.concat(user.schedules.userSchedules);
 				console.log()
