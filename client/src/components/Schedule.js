@@ -1,17 +1,17 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {Link, useParams} from 'react-router-dom';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
-import ListGroup from 'react-bootstrap/ListGroup';
 import 'bootstrap/dist/css/bootstrap.css';
 import axios from 'axios';
+import {AuthContext} from '../firebase/Auth';
 import '../App.css';
 
 function Schedule(props) {
   const [loading, setLoading] = useState(true);
   const [scheduleData, setScheduleData] = useState(undefined);
-  const [listBtnToggle, setListBtnToggle] = useState(false);
   const [addBtnToggle, setAddBtnToggle] = useState(false);
+  const {currentUser} = useContext(AuthContext);
   let {scheduleId} = useParams();
   let list = null;
 
@@ -19,7 +19,14 @@ function Schedule(props) {
     console.log('Schedule useEffect')
     async function fetchData() {
       try {
-        const {data: schedule} = await axios.get(`http://localhost:3000/${scheduleId}`);
+        // const {data: schedule} = await axios.get(`http://localhost:3001/${scheduleId}`);
+        const {data: schedule} = await axios({
+          method: 'get',
+          url: `/schedules/${scheduleId}`,
+          baseURL: 'http://localhost:3001',
+          headers: {'Content-Type': 'application/json'},
+          data: {userId: currentUser.email}
+        })
         setScheduleData(schedule);
         setLoading(false);
       } catch (e) {
@@ -65,7 +72,7 @@ function Schedule(props) {
         <h2>{scheduleData.name}</h2>
         <div className="container">
           <h3 className="container-title">Events</h3>
-          <button onClick={() => setAddBtnToggle(!addBtnToggle)}>Add Event</button>
+          <Button onClick={() => setAddBtnToggle(!addBtnToggle)}>Add Event</Button>
           <div class="row justify-content-center">
             {list}
           </div>

@@ -1,4 +1,5 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
+import {AuthContext} from '../firebase/Auth';
 import '../App.css';
 import {Link} from 'react-router-dom';
 import axios from 'axios';
@@ -11,6 +12,7 @@ function Schedules() {
   const [loading, setLoading] = useState(true);
   const [schedulesData, setSchedulesData] = useState(undefined);
   const [addBtnToggle, setBtnToggle] = useState(false);
+  const {currentUser} = useContext(AuthContext);
   let list = null;
 
   useEffect(() => {
@@ -18,7 +20,13 @@ function Schedules() {
     async function fetchData() {
       try {
         setLoading(true);
-        const { data } = await axios.get('http://localhost:3001/schedules/');
+        const {data} = await axios({
+          method: 'get',
+          url: '/schedules',
+          baseURL: 'http://localhost:3001',
+          headers: {'Content-Type': 'application/json'},
+          data: {userId: currentUser.email}
+        })
         setSchedulesData(data);
         setLoading(false);
       } catch (e) {
@@ -30,8 +38,8 @@ function Schedules() {
   
   const buildCard = (schedule) => {
     return (
-      <Link to={`/schedules/${schedule.id}`}>
-        <Card id={schedule.id}>
+      <Link to={`/schedules/${schedule._id}`}>
+        <Card id={schedule._id}>
           <Card.Body>
             <Card.Title>{schedule.name}</Card.Title>
             <Card.Text>More Info</Card.Text>
