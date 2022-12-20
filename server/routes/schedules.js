@@ -109,7 +109,7 @@ router.post('/:scheduleId/invite/', async (req,res) => {
     try{
 			if(!req.session.email) return res.status(403).json("User not logged in.");
         let {scheduleId} = req.params;
-				const userEmail = req.body.userEmail;
+				let userEmail = req.body.userEmail;
         scheduleId = validation.checkId(scheduleId, "Schedule Id");
 				userEmail = validation.checkEmail(userEmail,"user email");
       
