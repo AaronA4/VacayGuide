@@ -52,18 +52,31 @@ const NavigationAuth = () => {
 
 const NavigationNonAuth = () => {
   return (
-    <nav className='navigation'>
-      <ul>
-        <li>
-          <NavLink to='/'>Landing</NavLink>
+    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+       <a className="navbar-brand" href="#">Vacay Guide</a>
+       <button 
+         className="navbar-toggler" 
+         type="button" 
+         data-toggle="collapse"
+         aria-controls="navbarSupportedContent"
+         aria-expanded="false"
+         aria-label="Toggle Navigation"
+       >
+         <span className="navbar-toggler-icon"></span>
+       </button>
+       <div className="collapse navbar-collapse" id="navbarSupportedContent">
+       <ul className="navbar-nav mr-auto">
+        <li className="nav-item-active">
+          <NavLink className="nav-link" to='/'>Landing</NavLink>
         </li>
-        <li>
-          <NavLink to='/signup'>Sign-up</NavLink>
+        <li className="nav-item-active">
+          <NavLink className="nav-link" to='/signup'>Sign-up</NavLink>
         </li>
-        <li>
-          <NavLink to='/signin'>Sign-In</NavLink>
+        <li className="nav-item-active">
+          <NavLink className="nav-link" to='/signin'>Sign-In</NavLink>
         </li>
       </ul>
+       </div>
     </nav>
   );
 };
