@@ -96,16 +96,19 @@ function CreateEvent() {
       headers['Content-Type'] = 'multipart/form-data';
 
       try {
-        let newEvent = await axios({
-          method: 'post',
-          url: '/schedules/' + scheduleId + '/createEvent',
-          baseURL: 'http://localhost:3001',
-          headers: headers,
-          data: form_data
-        })
-
-
-        navigate('/schedules/' + scheduleId + '/calendar');
+        let newEvent = await axios.post(
+          `http://localhost:3001/schedules/${scheduleId}/createEvent`,
+          form_data,
+          headers
+        )
+        // let newEvent = await axios({
+        //   method: 'post',
+        //   url: '/schedules/' + scheduleId + '/createEvent',
+        //   baseURL: 'http://localhost:3001',
+        //   headers: headers,
+        //   data: form_data
+        // })
+        navigate('/schedules/' + scheduleId);
       }catch(e) {
         console.log(e)
         setCustomError(e.response.statusText);

@@ -51,7 +51,7 @@ function Event () {
         let attendeeList = [];
         let item;
         for (let attendee of attendees){
-            attendeeList.push(<ListGroup.Item>{attendee}</ListGroup.Item>);
+            attendeeList.push(<ListGroup.Item key = {attendee}>{attendee}</ListGroup.Item>);
         }
 
         return attendeeList
@@ -74,6 +74,7 @@ function Event () {
         let attendeeIndex = event.attendees.findIndex(attendee => attendee == currentUser.email);
         event.attendees.splice(attendeeIndex, 1);
         let body =  {userId: currentUser.email, attendees: event.attendees};
+        
         let newEvent = await axios({
             method: 'patch',
             url: '/schedules/' + scheduleId + '/' + eventId,
@@ -85,10 +86,10 @@ function Event () {
     }
 
     const styles = {
-        crd: {
-            width: '25vw',
-            height: '30vh'
-        },
+        // crd: {
+        //     width: '25vw',
+        //     height: '30vh'
+        // },
         crdImg: {
             maxWidth: '25vw',
             maxHeight: '50vh'
@@ -102,7 +103,6 @@ function Event () {
     }else {
         return (
             <div>
-                {console.log(userData)}
                 {userData && userData.schedules.find(id => id == scheduleId) && <Link className='nav-link' to={'/schedules/' + scheduleId + '/editEvent/' + eventId}>Edit Event</Link>}
                 <Card style={styles.crd}>
                     <Card.Img variant="top" src={'http://localhost:3001/public/images/'+eventData.image} alt="event image" style={styles.crdImg}/>

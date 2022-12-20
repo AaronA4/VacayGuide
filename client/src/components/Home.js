@@ -8,7 +8,24 @@ import Schedules from './Schedules';
 
 function Home() {
   const { currentUser } = useContext(AuthContext);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    console.log('User Search useEffect')
+    async function fetchData() {
+        try {
+            if (currentUser !== null) {
+                setLoading(false);
+            } else {
+                setLoading(true);
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    }
+    fetchData();
+  }, []);
+
   const doReload = () => {
     setLoading(true);
     setLoading(false);
@@ -32,7 +49,7 @@ function Home() {
               <Card.Text>{currentUser.email}</Card.Text>
             </Card.Body>
           </Card>
-          <Card id="Invites" onClick={doReload}>
+          <Card id="Invites">
             <Card.Body>
               <MyInvites />
             </Card.Body>
