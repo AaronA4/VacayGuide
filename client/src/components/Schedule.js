@@ -58,7 +58,7 @@ function Schedule(props) {
     eventData
     && eventData.map((event) => {
       return (
-        <Link to={`/schedules/${params.scheduleId}/${event.id}`}>
+        <Link to={`/schedules/${params.scheduleId}/event/${event.id}`}>
           <Card id = {event.id}>
             <Card.Body>
               <Card.Title>{event.name}</Card.Title>
