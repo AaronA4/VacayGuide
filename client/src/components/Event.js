@@ -23,16 +23,16 @@ function Event () {
       accesstoken: accessToken
     }};    
     let {scheduleId, eventId} = useParams();
-
+    let currentUserId;
     useEffect(() => {
       console.log('on load useEffect');
       async function fetchData() {
         try {
           setLoading(true);
-
-          const currentUserId = await axios.get('http://localhost:3001/userId/' + currentUser.email );
-
-          const { data } = await axios.get('http://localhost:3001/schedules/' + scheduleId + '/' + eventId, headers);
+            if(currentUser){
+                currentUserId = await axios.get('http://localhost:3001/userId/' + currentUser.email);
+            }
+          const { data } = await axios.get('http://localhost:3001/schedules/' + scheduleId + '/' + eventId);
           //const { user } = await axios.get('http://localhost:3001/')
           setEventData(data);
           setAttending(data.attendees.includes(currentUser.email));
