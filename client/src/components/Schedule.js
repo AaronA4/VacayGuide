@@ -7,8 +7,8 @@ import axios from 'axios';
 import firebase from 'firebase/app';
 import { getSessionToken } from '../firebase/FirebaseFunctions';
 import {AuthContext} from '../firebase/Auth';
-import CreateEvent from './CreateEvent'
-import InviteForm from './Forms/InviteForm'
+import CreateEvent from './CreateEvent';
+import InvitedUsers from './InvitedUsers';
 import '../App.css';
 
 function Schedule(props) {
@@ -17,7 +17,6 @@ function Schedule(props) {
   const [scheduleData, setScheduleData] = useState(undefined);
   const [eventData, setEventData] = useState(undefined);
   const [addBtnToggle, setAddBtnToggle] = useState(false);
-  const [invBtnToggle, setInvBtnToggle] = useState(false);
   const {currentUser} = useContext(AuthContext);
   let params = useParams();
   let list = null;
@@ -65,7 +64,7 @@ function Schedule(props) {
           <Card.Body>
             <Card.Title>{event.name}</Card.Title>
             <Card.Text>{event.description}</Card.Text>
-            <Card.Text>Cost: {event.cost}</Card.Text>
+            <Card.Text>Cost: ${event.cost}</Card.Text>
             <Link to={`/schedules/${params.scheduleId}/event/${event.name}`}>
               More Info
             </Link>
@@ -91,8 +90,9 @@ function Schedule(props) {
       <div className="content">
         <br />
         <h2>{scheduleData.name}</h2>
-        <Button onClick={() => setInvBtnToggle(!invBtnToggle)}>Invite User</Button>
-        {invBtnToggle && <InviteForm />}
+        <Link to={`/schedules/${params.scheduleId}/invite`}>
+          View Attendees
+        </Link>
         <div className="container">
           <h3 className="container-title">Events</h3>
           <Button onClick={() => setAddBtnToggle(!addBtnToggle)}>Add Event</Button>

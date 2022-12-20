@@ -21,13 +21,13 @@ router.get('/', async (req,res) => {
    if(!req.session.email) return res.status(403).json("User not logged in.");
     try{
 	    
-				let email = validation.checkEmail(req.session.email);
-				const user = await userData.getUserByEmail(email);
+        let email = validation.checkEmail(req.session.email);
+        const user = await userData.getUserByEmail(email);
         const scheduleIds = user.schedules.ownedSchedules.concat(user.schedules.userSchedules);
-				let scheduleList = [];
-				for(let i = 0;i<scheduleIds.length; ++i){
-						scheduleList.push(await scheduleData.getScheduleById(scheduleIds[i]));
-				}
+        let scheduleList = [];
+        for(let i = 0;i<scheduleIds.length; ++i){
+                scheduleList.push(await scheduleData.getScheduleById(scheduleIds[i]));
+        }
         res.status(200).json(scheduleList);
     }catch(e){
         res.status(500).json({error: e});

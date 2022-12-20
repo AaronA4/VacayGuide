@@ -32,7 +32,7 @@ function Event () {
 
           const currentUserId = await axios.get('http://localhost:3001/userId/' + currentUser.email );
 
-          const { data } = await axios.get('http://localhost:3001/schedules/' + scheduleId + '/' + eventId);
+          const { data } = await axios.get('http://localhost:3001/schedules/' + scheduleId + '/' + eventId, headers);
           //const { user } = await axios.get('http://localhost:3001/')
           setEventData(data);
           setAttending(data.attendees.includes(currentUser.email));
