@@ -44,6 +44,7 @@ app.use('/signup', decodeToken);
 app.use('/logout', decodeToken);
 app.use('/changeUserPW', decodeToken);
 app.use('/changeUserInfo', decodeToken);
+app.use('/userId/:userEmail', decodeToken);
 
 app.use(async (req, res, next) => {
   let date = new Date().toUTCString();

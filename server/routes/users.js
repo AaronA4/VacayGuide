@@ -87,8 +87,8 @@ router.post('/changeUserInfo', async (req,res) => {
 
 router.get('/logout', async (req,res) => {
     try {
-        console.log("Log out user: " + req.session.user.email);
-        req.session.destroy();
+        req.session.email = undefined;
+        res.status(200).json("Logout success");
     }catch(e){
         return res.status(500).json({error: e});
     }
@@ -99,6 +99,18 @@ router.get("/users/:searchTerm", async (req,res) => {
         let searchTerm = validation.checkString(req.params.searchTerm, "Search Term");
         let results = await userData.search(searchTerm);
         return res.status(200).json(results);
+    }catch(e){
+        return res.status(500).json({error: e});
+    }
+});
+
+router.get("/userId/:userEmail", async (req,res) => {
+    const userBody = req.body;
+    try {
+        let {email} = userBody;
+        email = validation.checkEmail(email);
+        let user = await userData.getUserByEmail(email);
+        return res.status(200).json(user._id);
     }catch(e){
         return res.status(500).json({error: e});
     }
