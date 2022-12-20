@@ -29,7 +29,7 @@ function CreateEvent() {
       try {
         setLoading(true);
         setError(false);
-        const { data } = await axios.get('http://localhost:3001/schedules/' + scheduleId, {}, headers);
+        const { data } = await axios.get('http://localhost:3001/schedules/' + scheduleId, headers);
         setScheduleData(data);
         setLoading(false);
       } catch (e) {

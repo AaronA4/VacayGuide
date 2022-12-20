@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useContext} from 'react';
 import '../App.css';
-import {useParams} from 'react-router-dom';
+import {useParams, useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -20,6 +20,7 @@ function Calendar() {
       email : currentUser.email,
       accesstoken: accessToken
     }};
+    const navigate = useNavigate();
     let {scheduleId} = useParams();
 
     const formatEvents = (events) => {
@@ -33,7 +34,7 @@ function Calendar() {
           title: event.name,
           start: new Date(event.startTime),
           end: new Date(event.endTime),
-          url: '/schedules/' + scheduleId + '/'+ event.name
+          url: '/schedules/' + scheduleId + '/event/'+ event.name
         });
       }
 
@@ -66,6 +67,9 @@ function Calendar() {
     }, [scheduleId]);
 
 
+    const eventClickHandler = (info) => {
+      navigate(info.event.url)
+    }
 
     if(loading) {
       return (<p>Loading...</p>);
@@ -78,6 +82,7 @@ function Calendar() {
           initialView="dayGridMonth"
           events={myEvents.events}
           initialDate={myEvents.minDate}
+          eventClick={eventClickHandler}
         />
       ); 
     }
