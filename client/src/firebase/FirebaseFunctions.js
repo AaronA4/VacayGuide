@@ -3,7 +3,7 @@ import axios from 'axios';
 
 async function doCreateUserWithEmailAndPassword(email, password, firstName, lastName) {
   await firebase.auth().createUserWithEmailAndPassword(email, password);
-  firebase.auth().currentUser.updateProfile({displayName: firstName + " " + lastName});
+  firebase.auth().currentUser.updateProfile({ displayName: firstName + " " + lastName });
   const formData = {
     email: email,
     password: password,
@@ -11,11 +11,14 @@ async function doCreateUserWithEmailAndPassword(email, password, firstName, last
     lastName: lastName,
     uid: firebase.auth().currentUser.uid
   };
-  axios({
+  await axios({
     method: 'post',
     url: 'http://localhost:3001/signup',
     data: formData
+  }).catch(function (error) {
+    console.log(error);
   });
+
 }
 
 async function doChangePassword(email, oldPassword, newPassword) {
@@ -44,10 +47,21 @@ async function doSignInWithEmailAndPassword(email, password) {
     email: email,
     password: password
   };
-  axios({
+  await axios({
     method: 'post',
     url: 'http://localhost:3001/login',
     data: formData
+  }).catch(function (error) {
+    if (error.response.data.error === "User not found") {
+      axios({
+        method: 'post',
+        url: 'http://localhost:3001/signup',
+        data: {
+          email: firebase.auth().currentUser.email, firstName: firebase.auth().currentUser.displayName, lastName: "Unkown",
+          password: password, uid: firebase.auth().currentUser.uid
+        }
+      });
+    }
   });
 }
 
