@@ -10,8 +10,8 @@ function Home() {
   return (
     <div>
       <h2>Welcome {currentUser.displayName}</h2>
-      <div class="container">
-        <div class="row">
+      <div className="container">
+        <div className="row">
           <Card id="Account">
             <Card.Body>
               <Account />

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import {AuthContext} from '../firebase/Auth';
 
 function AddSchedule() {
@@ -38,7 +38,7 @@ function AddSchedule() {
                     <label>
                         Schedule Name:
                         <input
-                            onChange={(e) => handleChange(e)}
+                            // onChange={(e) => handleChange(e)}
                             className='form-control'
                             required
                             name='name'

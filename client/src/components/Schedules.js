@@ -1,4 +1,6 @@
 import React, {useState, useEffect, useContext} from 'react';
+import firebase from 'firebase/app';
+import { getSessionToken } from '../firebase/FirebaseFunctions';
 import {AuthContext} from '../firebase/Auth';
 import '../App.css';
 import {Link} from 'react-router-dom';
@@ -10,26 +12,34 @@ import AddSchedule from './AddSchedule';
 
 function Schedules() {
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [schedulesData, setSchedulesData] = useState(undefined);
   const [addBtnToggle, setBtnToggle] = useState(false);
   const {currentUser} = useContext(AuthContext);
   let list = null;
+
+  const email = firebase.auth().currentUser.email;
+  const accessToken = getSessionToken();
+  const headers = {headers: {
+    email : email,
+    accesstoken: accessToken
+  }};
 
   useEffect(() => {
     console.log('on load useEffect');
     async function fetchData() {
       try {
         setLoading(true);
-        const {data} = await axios({
-          method: 'get',
-          url: '/schedules',
-          baseURL: 'http://localhost:3001',
-          headers: {'Content-Type': 'application/json'},
-          data: {userId: currentUser.email}
-        })
+        const {data} = await axios.get(
+          'http://localhost:3001/schedules',
+          headers
+        );
+        console.log(data);
         setSchedulesData(data);
         setLoading(false);
       } catch (e) {
+        setError(true);
+        setLoading(false);
         console.log(e);
       }
     };
@@ -62,18 +72,24 @@ function Schedules() {
         <h2>Loading. . . .</h2>
       </div>
     );
+  } else if (error) {
+    console.log(error);
+    return(
+      <div>
+        <h2>404 Page Not Found.</h2>
+      </div>
+    );
   } else {
     return (
-      <div class="content">
+      <div className="content">
         <br />
         <h1>Current Vacay Schedules</h1>
-        <br />
         <Button onClick={()=> setBtnToggle(!addBtnToggle)}>Create Schedule</Button>
         <br />
-        <AddSchedule />
+        {addBtnToggle && <AddSchedule />}
         <br />
-        <div class="container">
-          <div class="row">
+        <div className="container">
+          <div className="row">
             {list}
           </div>
         </div>

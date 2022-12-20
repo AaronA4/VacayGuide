@@ -9,7 +9,9 @@ import '../App.css';
 
 function Schedule(props) {
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [scheduleData, setScheduleData] = useState(undefined);
+  const [eventData, setEventData] = useState(undefined);
   const [addBtnToggle, setAddBtnToggle] = useState(false);
   const {currentUser} = useContext(AuthContext);
   let {scheduleId} = useParams();
@@ -19,17 +21,14 @@ function Schedule(props) {
     console.log('Schedule useEffect')
     async function fetchData() {
       try {
-        // const {data: schedule} = await axios.get(`http://localhost:3001/${scheduleId}`);
-        const {data: schedule} = await axios({
-          method: 'get',
-          url: `/schedules/${scheduleId}`,
-          baseURL: 'http://localhost:3001',
-          headers: {'Content-Type': 'application/json'},
-          data: {userId: currentUser.email}
-        })
+        setLoading(true);
+        const {data: schedule} = await axios.get(`http://localhost:3001/schedules/${scheduleId}`)
         setScheduleData(schedule);
+        setEventData(schedule.events);
         setLoading(false);
       } catch (e) {
+        setError(true);
+        setLoading(false);
         console.log(e);
       }
     }
@@ -43,8 +42,8 @@ function Schedule(props) {
   }
 
   list = 
-    scheduleData
-    && scheduleData.events.map((event) => {
+    eventData
+    && eventData.map((event) => {
       return (
         <Link to={`/schedules/${scheduleId}/${event.id}`}>
           <Card id = {event.id}>
@@ -62,6 +61,12 @@ function Schedule(props) {
     return (
       <div>
         <h2>Loading. . . .</h2>
+      </div>
+    );
+  } else if (error) {
+    return (
+      <div>
+        <h2>404 Page Not Found.</h2>
       </div>
     );
   } else {
