@@ -38,7 +38,7 @@ function App() {
           </Route>
           <Route path='/schedules' element={<PrivateRoute />}>
             <Route path='/schedules' element={<Schedules />} />
-            <Route path='/schedules/:id' element={<Schedule />} />
+            <Route path='/schedules/:scheduleId' element={<Schedule />} />
             <Route path='/schedules/createSchedule' element={<AddSchedule />} />
             <Route path='/schedules/:scheduleId/calendar' element={<Calendar />} />
             <Route path='/schedules/:scheduleId/:eventId' element={<Event />} />

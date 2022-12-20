@@ -4,7 +4,10 @@ import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import 'bootstrap/dist/css/bootstrap.css';
 import axios from 'axios';
+import firebase from 'firebase/app';
+import { getSessionToken } from '../firebase/FirebaseFunctions';
 import {AuthContext} from '../firebase/Auth';
+import CreateEvent from './CreateEvent'
 import '../App.css';
 
 function Schedule(props) {
@@ -14,15 +17,25 @@ function Schedule(props) {
   const [eventData, setEventData] = useState(undefined);
   const [addBtnToggle, setAddBtnToggle] = useState(false);
   const {currentUser} = useContext(AuthContext);
-  let {scheduleId} = useParams();
+  let params = useParams();
   let list = null;
+
+  const email = firebase.auth().currentUser.email;
+  const accessToken = getSessionToken();
+  const headers = {headers: {
+    email : email,
+    accesstoken: accessToken
+  }};
 
   useEffect(() => {
     console.log('Schedule useEffect')
     async function fetchData() {
       try {
         setLoading(true);
-        const {data: schedule} = await axios.get(`http://localhost:3001/schedules/${scheduleId}`)
+        const {data: schedule} = await axios.get(
+          `http://localhost:3001/schedules/${params.scheduleId}`,
+          headers
+        )
         setScheduleData(schedule);
         setEventData(schedule.events);
         setLoading(false);
@@ -33,7 +46,7 @@ function Schedule(props) {
       }
     }
     fetchData();
-  }, [scheduleId]);
+  }, [params.scheduleId]);
 
 
   const isEmpty = (lst) => {
@@ -45,7 +58,7 @@ function Schedule(props) {
     eventData
     && eventData.map((event) => {
       return (
-        <Link to={`/schedules/${scheduleId}/${event.id}`}>
+        <Link to={`/schedules/${params.scheduleId}/${event.id}`}>
           <Card id = {event.id}>
             <Card.Body>
               <Card.Title>{event.name}</Card.Title>
@@ -73,12 +86,12 @@ function Schedule(props) {
     return (
       <div className="content">
         <br />
-        <h2>This is where the details of a singular Schedule are displayed.</h2>
         <h2>{scheduleData.name}</h2>
         <div className="container">
           <h3 className="container-title">Events</h3>
           <Button onClick={() => setAddBtnToggle(!addBtnToggle)}>Add Event</Button>
-          <div class="row justify-content-center">
+          {addBtnToggle && <CreateEvent />}
+          <div className="row justify-content-center">
             {list}
           </div>
         </div>
