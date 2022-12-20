@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const data = require('../data');
+const { checkEmail, checkId } = require('../validation');
 const invitesData = data.invites;
 const schedulesData = data.schedules;
 const usersData = data.users;
@@ -19,21 +20,21 @@ const usersData = data.users;
  * ]
  */
 router.get('/', async(req,res)=>{
+    try {
+        //console.log(req.headers);
+        const email = req.session.email;
+        checkEmail(email, "Email");
+    } catch(e) {
+        return res.status(400).json({"ERROR": e});
+    }
+    
     try{
-        /**
-         * TODO: Validations Missing
-         */
-        // const id = req.session.id;
-        console.log(req.headers);
-        const email = req.headers.email;
-
+        const email = req.session.email;
         // Retrieve my Invites
         const user = await usersData.getUserByEmail(email);
         const myInvites = user.invites;
 
-
         const invitesList = [];
-
         // Retreive Schedule Info
         for (let invite of myInvites) {
             const schedule = await schedulesData.getScheduleById(invite.scheduleId);
@@ -48,7 +49,7 @@ router.get('/', async(req,res)=>{
         }
         res.status(200).json(invitesList);
     }catch(e){
-        res.status(400).json(e);
+        res.status(500).json(e);
     }
 })
 
@@ -60,12 +61,20 @@ router.get('/', async(req,res)=>{
  *      3. Remove the Invitation from invites of userId
  */
 router.put('/:scheduleId/approve', async(req,res)=>{
+    try {
+        //console.log(req.headers);
+        const email = req.session.email;
+        const scheduleId = req.params.scheduleId;
+        checkEmail(email, "Email");
+        checkId(scheduleId, "scheduleId");
+    } catch(e) {
+        return res.status(400).json({"ERROR": e});
+    }
     try{
         /**
          * TODO: Validations Missing
          */
-        console.log(req.headers);
-         const email = req.headers.email;
+         const email = req.session.email;
          const user = await usersData.getUserByEmail(email);
          const userId = user._id.toString();
         const scheduleId = req.params.scheduleId;
@@ -83,11 +92,20 @@ router.put('/:scheduleId/approve', async(req,res)=>{
  * 1. Remove the invite from userId's invites
  */
 router.put('/:scheduleId/deny',async(req,res)=>{
+    try {
+        //console.log(req.headers);
+        const email = req.session.email;
+        const scheduleId = req.params.scheduleId;
+        checkEmail(email, "Email");
+        checkId(scheduleId, "scheduleId");
+    } catch(e) {
+        return res.status(400).json({"ERROR": e});
+    }
     try{
         /**
          * TODO: Validations Missing
          */
-         const email = req.headers.email;
+         const email = req.session.email;
          const user = await usersData.getUserByEmail(email);
          const userId = user._id.toString();
         const scheduleId = req.params.scheduleId;
