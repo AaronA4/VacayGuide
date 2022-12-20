@@ -43,9 +43,13 @@
 	padding: 0;
 }
 
+.nav-item {
+	color: black
+}
+
 .navigation a:link,
 .navigation a:visited {
-	color: white;
+	color: black;
 	text-decoration: none;
 }
 
@@ -56,18 +60,6 @@
 
 .error {
 	font-weight: bold;
-	color: red !important;
+	color: rgb(207, 4, 4) !important;
 }
 
-.forgotPassword {
-	background: none !important;
-	border: none !important;
-	text-decoration: underline;
-	margin-left: 5px;
-	color: #069;
-}
-
-.forgotPassword:hover {
-	text-decoration: none;
-	color: red;
-}

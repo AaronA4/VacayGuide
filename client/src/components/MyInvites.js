@@ -74,7 +74,7 @@ function MyInvites() {
         return (
           // Show Invites List with detailed attributes 
           <div>
-            <h2>Current Invites</h2>
+            <h1>Current Invites</h1>
             {inviteCards}
           </div>
         );

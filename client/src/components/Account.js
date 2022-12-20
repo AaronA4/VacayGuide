@@ -25,7 +25,7 @@ function Account() {
   if(!showChangePW && ! showChangeInfo){
     return (
       <div className="container mr-auto">
-        <h2>Account Info</h2>
+        <h1>Account Info</h1>
         <User />
         <Button onClick={()=> {
           setShowChangePW(false);
@@ -40,7 +40,7 @@ function Account() {
   }else if (showChangeInfo) {
     return(
     <div className="container mr-auto">
-        <h2>Account Info</h2>
+        <h1>Account Info</h1>
         <User />
         <Button onClick={()=> {
           setShowChangePW(false);
@@ -58,7 +58,7 @@ function Account() {
   } else {
     return (
       <div className="container mr-auto">
-        <h2>Account Info</h2>
+        <h1>Account Info</h1>
         <User />
         <Button onClick={()=> {
           setShowChangePW(false);
