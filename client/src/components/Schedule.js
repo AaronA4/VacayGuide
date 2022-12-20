@@ -38,6 +38,7 @@ function Schedule(props) {
         )
         setScheduleData(schedule);
         setEventData(schedule.events);
+        console.log(schedule.events);
         setLoading(false);
       } catch (e) {
         setError(true);
@@ -56,17 +57,18 @@ function Schedule(props) {
 
   list = 
     eventData
-    && eventData.map((event) => {
+    && eventData.map((event,index) => {
       return (
-        <Link to={`/schedules/${params.scheduleId}/event/${event.id}`}>
-          <Card id = {event.id}>
-            <Card.Body>
-              <Card.Title>{event.name}</Card.Title>
-              <Card.Text>{event.description}</Card.Text>
-              <Card.Text>Cost: {event.cost}</Card.Text>
-            </Card.Body>
-          </Card>
-        </Link>
+        <Card key = {index}>
+          <Card.Body>
+            <Card.Title>{event.name}</Card.Title>
+            <Card.Text>{event.description}</Card.Text>
+            <Card.Text>Cost: {event.cost}</Card.Text>
+            <Link to={`/schedules/${params.scheduleId}/event/${event.name}`}>
+              More Info
+            </Link>
+          </Card.Body>
+        </Card>
       )
     })
     
@@ -91,6 +93,8 @@ function Schedule(props) {
           <h3 className="container-title">Events</h3>
           <Button onClick={() => setAddBtnToggle(!addBtnToggle)}>Add Event</Button>
           {addBtnToggle && <CreateEvent />}
+          <br />
+          <br />
           <div className="row justify-content-center">
             {list}
           </div>
