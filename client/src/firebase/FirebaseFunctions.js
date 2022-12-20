@@ -3,7 +3,8 @@ import axios from 'axios';
 
 async function doCreateUserWithEmailAndPassword(email, password, firstName, lastName) {
   await firebase.auth().createUserWithEmailAndPassword(email, password);
-  firebase.auth().currentUser.updateProfile({ displayName: firstName + " " + lastName });
+  await firebase.auth().currentUser.updateProfile({ displayName: firstName + " " + lastName });
+  const accessToken = getSessionToken();
   const formData = {
     email: email,
     password: password,
@@ -14,7 +15,8 @@ async function doCreateUserWithEmailAndPassword(email, password, firstName, last
   await axios({
     method: 'post',
     url: 'http://localhost:3001/signup',
-    data: formData
+    data: formData,
+    headers: {email: email, accesstoken: accessToken}
   }).catch(function (error) {
     console.log(error);
   });
@@ -28,6 +30,7 @@ async function doChangePassword(email, oldPassword, newPassword) {
   );
   await firebase.auth().currentUser.reauthenticateWithCredential(credential);
   await firebase.auth().currentUser.updatePassword(newPassword);
+  const accessToken = getSessionToken();
   const formData = {
     email: email,
     oldPassword: oldPassword,
@@ -36,13 +39,15 @@ async function doChangePassword(email, oldPassword, newPassword) {
   await axios({
     method: 'post',
     url: 'http://localhost:3001/changeUserPW',
-    data: formData
+    data: formData,
+    headers: {email: email, accesstoken: accessToken}
   });
   await doSignOut();
 }
 
 async function doSignInWithEmailAndPassword(email, password) {
   await firebase.auth().signInWithEmailAndPassword(email, password);
+  const accessToken = getSessionToken();
   const formData = {
     email: email,
     password: password
@@ -50,7 +55,8 @@ async function doSignInWithEmailAndPassword(email, password) {
   await axios({
     method: 'post',
     url: 'http://localhost:3001/login',
-    data: formData
+    data: formData,
+    headers: {email: email, accesstoken: accessToken}
   }).catch(function (error) {
     if (error.response.data.error === "User not found") {
       axios({
@@ -59,7 +65,8 @@ async function doSignInWithEmailAndPassword(email, password) {
         data: {
           email: firebase.auth().currentUser.email, firstName: firebase.auth().currentUser.displayName, lastName: "Unkown",
           password: password, uid: firebase.auth().currentUser.uid
-        }
+        },
+        headers: {email: email, accesstoken: accessToken}
       });
     }
   });

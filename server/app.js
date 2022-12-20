@@ -49,6 +49,9 @@ app.use("/public", express.static(public));
  */
 app.use('/invites*', decodeToken);
 app.use('/schedules', decodeToken);
+app.use('/login', decodeToken);
+app.use('/signup', decodeToken);
+app.use('/logout', decodeToken);
 app.use('/changeUserPW', decodeToken);
 
 

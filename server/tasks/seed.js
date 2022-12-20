@@ -44,6 +44,7 @@ async function main() {
       }
     }
     await firebase.auth().signInWithEmailAndPassword(user.email,user.password);
+    await firebase.auth().currentUser.updateProfile({ displayName: user.firstName + " " + user.lastName });
     user1 =  await users.addUser(user.email,user.firstName,user.lastName,user.password,firebase.auth().currentUser.uid);
     await firebase.auth().signOut();
     
@@ -57,6 +58,7 @@ async function main() {
       }
     }
     await firebase.auth().signInWithEmailAndPassword(user.email, user.password);
+    await firebase.auth().currentUser.updateProfile({ displayName: user.firstName + " " + user.lastName });
     user2 =  await users.addUser(user.email,user.firstName,user.lastName,user.password,firebase.auth().currentUser.uid);
     await firebase.auth().signOut();
 
@@ -104,6 +106,7 @@ async function main() {
       }
       // Add user to Mongo DB
       await firebase.auth().signInWithEmailAndPassword(host1.email, host1.password);
+      await firebase.auth().currentUser.updateProfile({ displayName: host1.firstName + " " + host1.lastName });
       host1 =  await users.addUser(host1.email, host1.firstName, host1.lastName, host1.password, firebase.auth().currentUser.uid);
       host1 = host1.createdUser;
       await firebase.auth().signOut();
@@ -121,6 +124,7 @@ async function main() {
       }
       // Add user to Mongo DB
       await firebase.auth().signInWithEmailAndPassword(guest1.email, guest1.password);
+      await firebase.auth().currentUser.updateProfile({ displayName: guest1.firstName + " " + guest1.lastName });
       guest1 =  await users.addUser(guest1.email, guest1.firstName, guest1.lastName, guest1.password, firebase.auth().currentUser.uid);
       guest1 = guest1.createdUser;
       await firebase.auth().signOut();
@@ -148,6 +152,7 @@ async function main() {
       }
       // Add user to Mongo DB
       await firebase.auth().signInWithEmailAndPassword(host2.email, host2.password);
+      await firebase.auth().currentUser.updateProfile({ displayName: host2.firstName + " " + host2.lastName });
       host2 =  await users.addUser(host2.email, host2.firstName, host2.lastName, host2.password, firebase.auth().currentUser.uid);
       host2 = host2.createdUser;
       await firebase.auth().signOut();
@@ -165,6 +170,7 @@ async function main() {
       }
       // Add user to Mongo DB
       await firebase.auth().signInWithEmailAndPassword(guest2.email, guest2.password);
+      await firebase.auth().currentUser.updateProfile({ displayName: guest2.firstName + " " + guest2.lastName });
       guest2 =  await users.addUser(guest2.email, guest2.firstName, guest2.lastName, guest2.password, firebase.auth().currentUser.uid);
       guest2 = guest2.createdUser;
       await firebase.auth().signOut();
