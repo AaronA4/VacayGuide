@@ -48,14 +48,14 @@ function Schedules() {
   
   const buildCard = (schedule) => {
     return (
-      <Link to={`/schedules/${schedule._id}`}>
-        <Card id={schedule._id}>
-          <Card.Body>
-            <Card.Title>{schedule.name}</Card.Title>
+      <Card id={schedule._id}>
+        <Card.Body>
+          <Card.Title>{schedule.name}</Card.Title>
+          <Link to={`/schedules/${schedule._id}`}>
             <Card.Text>More Info</Card.Text>
-          </Card.Body>
-        </Card>
-      </Link>
+          </Link>
+        </Card.Body>
+      </Card>
     )
   }
 
