@@ -70,6 +70,8 @@ function CreateEvent() {
     }
 
     if (flag === true){
+      let form_data =  new FormData();
+      let file = form.image.files[0]
       let body = {
         userId: currentUser.email,
         name: name,
@@ -79,17 +81,25 @@ function CreateEvent() {
         endTime: endTime.getTime()
       }; 
 
+      for (let key in body) {
+        form_data.append(key, body[key]);
+      }
+
+      form_data.append('file', file);
+
       try {
         let newEvent = await axios({
           method: 'post',
           url: '/schedules/' + scheduleId + '/createEvent',
           baseURL: 'http://localhost:3001',
-          headers: {'Content-Type' : 'application/json'},
-          data: body
+          headers: {'Content-Type' : 'multipart/form-data'},
+          data: form_data
         })
-        
+
+
         navigate('/schedules/' + scheduleId + '/calendar');
       }catch(e) {
+        console.log(e)
         setCustomError(e.response.statusText);
       }
 
@@ -159,7 +169,7 @@ function CreateEvent() {
 
             <Form.Group className="mb-3" controlId="image">
               <Form.Label>Image</Form.Label>
-              <Form.Control type="file" placeholder="Image" />
+              <Form.Control required type="file" placeholder="Image" />
             </Form.Group>
 
             <Button variant="primary" type="submit">

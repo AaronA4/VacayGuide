@@ -11,6 +11,11 @@ const server = require('http').createServer(express);
 const validation = require('../validation');
 var io = require('socket.io')(server);
 const schedules = mongoCollections.schedules;
+const multer = require('multer');
+const upload = multer({dest: 'public/uploads/'}).single('file');
+const fs = require('fs');
+const gm = require('gm');
+const path = require('path')
 
 router.get('/', async (req,res) => {
   if(!req.session.user) return res.status(403).json("User not logged in.");
@@ -179,35 +184,61 @@ router.get('/:scheduleId/:eventId', async (req,res) => {
 });
 
 router.post('/:scheduleId/createEvent', async (req, res) => {
-    let scheduleId;
-    let userId;
-    let name;
-    let description;
-    let cost;
-    let startTime;
-    let endTime;
+    var scheduleId;
+    var userId;
+    var name;
+    var description;
+    var cost;
+    var startTime;
+    var endTime;
+    var file;
+    var errorFlag = false
 
-    try{
-        userId = validation.checkEmail(req.body.userId, "User ID");
-        scheduleId = validation.checkId(req.params.scheduleId, "Schedule ID");
-        name = validation.checkString(req.body.name, "Event Name");
-        description = validation.checkString(req.body.description, "Event Description");
-        cost = validation.checkCost(req.body.cost, "Cost");
-        if (req.body.startTime) startTime = new Date(req.body.startTime);
-        startTime = validation.checkDate(startTime, "Start Time");
-        if (req.body.endTime) endTime = new Date(req.body.endTime);
-        endTime = validation.checkDate(endTime, "End Time");
-        if (endTime < startTime) throw `Error: End time must come after start time!`;
-    }catch(e) {
-        return res.status(400).json({error: e});
-    }
+    upload(req, res, async (err) => {
+        if(req.file) file = req.file.filename;
+        if(err) errorFlag = err;
 
-    try{
-        const newEvent = await scheduleData.createEvent(userId, scheduleId, name, description, cost, startTime, endTime);
-        return res.status(200).json(newEvent);
-    }catch(e){
-        return res.status(404).json({error: e})
-    }
+        userId = req.body.userId;
+        name = req.body.name;
+        description = req.body.description;
+        cost = req.body.cost;
+        startTime = req.body.startTime;
+        endTime = req.body.endTime;
+
+        try {
+            if(errorFlag) return res.status(400).json({error: err});;
+            userId = validation.checkEmail(userId, "User ID");
+            scheduleId = validation.checkId(req.params.scheduleId, "Schedule ID");
+            name = validation.checkString(name, "Event Name");
+            description = validation.checkString(description, "Event Description");
+            cost = validation.checkCost(cost, "Cost");
+            if (startTime) startTime = new Date(parseInt(startTime));
+            startTime = validation.checkDate(startTime, "Start Time");
+            if (endTime) endTime = new Date(parseInt(endTime));
+            endTime = validation.checkDate(endTime, "End Time");
+            if (endTime < startTime) throw `Error: End time must come after start time!`;
+            file = validation.checkString(file, 'Image name');
+        }catch(e) {
+            return res.status(400).json({error: e});
+        }
+
+        try{
+            var srcPath = path.join(__dirname, '../public/uploads/'+file);
+            var destPath = path.join(__dirname, '../public/images/'+file+".jpg");
+            gm(srcPath)
+                .resizeExact(540, 540)
+                .noProfile()
+                .write(destPath, function (err) {
+                    if (!err) console.log('image done');
+                    if (err) console.log(err);
+                });
+            const newEvent = await scheduleData.createEvent(userId, scheduleId, name, description, cost, startTime, endTime, file+'.jpg');
+            return res.status(200).json(newEvent);
+        }catch(e){
+            return res.status(404).json({error: e})
+        }
+    });
+ 
 });
 
 router.patch('/:scheduleId/:eventId', async (req,res) => {

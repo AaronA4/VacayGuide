@@ -13,6 +13,7 @@ function Event () {
     const [error, setError] = useState(false);
     const [eventData, setEventData] = useState(undefined);
     const [attending, setAttending] = useState(false);
+    const [userDate, setUserData] = useState(undefined);
     const {currentUser} = useContext(AuthContext);
     let {scheduleId, eventId} = useParams();
 
@@ -22,6 +23,7 @@ function Event () {
         try {
           setLoading(true);
           const { data } = await axios.get('http://localhost:3001/schedules/' + scheduleId + '/' + eventId);
+          //const { user } = await axios.get('http://localhost:3001/')
           setEventData(data);
           setAttending(data.attendees.includes(currentUser.email));
           setLoading(false);
@@ -72,14 +74,25 @@ function Event () {
         setAttending(false);
     }
 
+    const styles = {
+        crd: {
+            width: '25vw',
+            height: '30vh'
+        },
+        crdImg: {
+            'max-width': '25vw',
+            'max-height': '50vh'
+        }
+    }
+
     if(loading) {
         return (<p>Loading...</p>);
     }else if(error){
         return (<p>404 Page not found.</p>);
     }else {
         return (
-            <Card>
-                <Card.Img variant="top" src="" />
+            <Card style={styles.crd}>
+                <Card.Img variant="top" src={'http://localhost:3001/public/images/'+eventData.image} alt="event image" style={styles.crdImg}/>
                 <Card.Body>
                     <Card.Title>{eventData.name}</Card.Title>
                     <Card.Text>Description: {eventData.description}</Card.Text>

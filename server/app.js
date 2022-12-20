@@ -4,6 +4,7 @@ const configRoutes = require('./routes');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const cors = require('cors');
+var path = require('path');
 
 const port = 3001;
 
@@ -38,6 +39,9 @@ app.use(async (req, res, next) => {
   console.log(`[${date}]: ${req.method} ${req.originalUrl} ${authStr}`);
   next();
 });
+
+var public = path.join(__dirname, '/public');
+app.use("/public", express.static(public));
 
 configRoutes(app);
 

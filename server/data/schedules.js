@@ -93,7 +93,7 @@ const exportedMethods = {
         return event.events[0];
     },
 
-    async createEvent(userID, scheduleID, name, description, cost, startTime, endTime){
+    async createEvent(userID, scheduleID, name, description, cost, startTime, endTime, image){
         userID = validation.checkEmail(userID, "User ID");
         scheduleID = validation.checkId(scheduleID, "Schedule ID");
         name = validation.checkString(name, "Event Name");
@@ -102,6 +102,7 @@ const exportedMethods = {
         startTime = validation.checkDate(startTime, "Start Time");
         endTime = validation.checkDate(endTime, "End Time");
         if (endTime < startTime) throw `Error: End time must come after start time!`;
+        image = validation.checkString(image, "Image name");
 
         const scheduleCollection = await schedules();
 
@@ -122,7 +123,8 @@ const exportedMethods = {
             cost: cost,
             startTime: startTime.getTime(),
             endTime: endTime.getTime(),
-            attendees: []
+            attendees: [],
+            image: image
         }
 
         const updateInfo = await scheduleCollection.updateOne(
@@ -134,7 +136,7 @@ const exportedMethods = {
         return this.getScheduleById(scheduleID);
     },
 
-    async updateEvent (userID, scheduleID, eventID, name, description, cost, startTime, endTime, attendees) {
+    async updateEvent (userID, scheduleID, eventID, name, description, cost, startTime, endTime, attendees, image) {
         userID = validation.checkEmail(userID, "User ID");
         scheduleID = validation.checkId(scheduleID, "Schedule ID");
         eventID = validation.checkString(eventID, "Event ID");
@@ -185,7 +187,11 @@ const exportedMethods = {
         }else {
             attendees = oldEvent.attendees;
         }
-
+        if(image) {
+            image = validation.checkString(image, 'Image name')
+        }else {
+            image = oldEvent.image
+        }
 
 
         const updatedEvent = {
@@ -194,7 +200,8 @@ const exportedMethods = {
             cost: cost,
             startTime: startTime,
             endTime: endTime,
-            attendees: attendees
+            attendees: attendees,
+            image: image
         }
 
         const updateInfo = await scheduleCollection.updateOne(
