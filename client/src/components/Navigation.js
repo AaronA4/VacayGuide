@@ -72,6 +72,9 @@ const NavigationNonAuth = () => {
           <li className="nav-item-active">
             <NavLink className="nav-link" to='/'>Landing</NavLink>
           </li>
+          <li className="nav-item">
+            <NavLink className="nav-link" to='/users'>Users</NavLink>
+          </li>
         </ul>
       </div>
       <div className="nav-signup me-2">

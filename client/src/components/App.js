@@ -43,9 +43,7 @@ function App() {
           </Route>
           <Route path='/signin' element={<SignIn />} />
           <Route path='/signup' element={<SignUp />} />
-          <Route path='/users' element={<PrivateRoute />}>
-            <Route path='/users' element={<SearchUsers />} />
-          </Route>
+          <Route path='/users' element={<SearchUsers />} />
           <Route path='/myInvites' element={<PrivateRoute />}>
             <Route path='/myInvites' element={<MyInvites />} />
           </Route>

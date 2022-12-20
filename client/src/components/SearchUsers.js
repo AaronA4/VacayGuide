@@ -74,23 +74,25 @@ function SearchUsers() {
     } else {
         return (
             <div className="content">
-                <form onSubmit={handleSearch}>
-                    <div className='form-group'>
-                        <label>
-                            Search Term:
-                            <input
-                                className='form-control'
-                                name='searchTerm'
-                                id='searchTerm'
-                                type='text'
-                                placeholder='Search Term'
-                                required
-                            />
-                        </label>
-                    </div>
-                    <button type='submit'>Search</button>
-                </form>
-                <div>
+                <div className='container mx-auto'>
+                    <form onSubmit={handleSearch}>
+                        <div className='form-group'>
+                            <label>
+                                Search Term:
+                                <input
+                                    className='form-control'
+                                    name='searchTerm'
+                                    id='searchTerm'
+                                    type='text'
+                                    placeholder='Search Term'
+                                    required
+                                />
+                            </label>
+                        </div>
+                        <button type='submit'>Search</button>
+                    </form>
+                </div>
+                <div className="container">
                     {list}
                 </div>
             </div>

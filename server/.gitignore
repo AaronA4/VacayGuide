@@ -3,6 +3,7 @@
 # dependencies
 /node_modules
 /config/vacayfall22-firebase-adminsdk-z7vjj-4177270302.json
+/config/serviceAccount.json
 
 # testing
 /coverage
