@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../App.css';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.css';
+import Card from 'react-bootstrap/Card';
 
 function SearchUsers() {
     const [loading, setLoading] = useState(false);
@@ -37,11 +38,12 @@ function SearchUsers() {
     list =
         usersData.map((user) => {
             return (
-                <li>
-                    <h2>First Name: {user.firstName}</h2>
-                    <h2>Last Name: {user.lastName}</h2>
-                    <h2>Email: {user.email}</h2>
-                </li>
+                <Card id={user._id}>
+                    <Card.Body>
+                        <Card.Title>{user.firstName}  {user.lastName}</Card.Title>
+                        <Card.Text>{user.email}</Card.Text>
+                    </Card.Body>
+                </Card>
             )
         });
 
@@ -89,9 +91,7 @@ function SearchUsers() {
                     <button type='submit'>Search</button>
                 </form>
                 <div>
-                    <ul>
-                        {list}
-                    </ul>
+                    {list}
                 </div>
             </div>
         );
