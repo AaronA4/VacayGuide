@@ -51,7 +51,6 @@ router.post('/signup', async (req,res) => {
 router.post('/changeUserPW', async (req,res) => {
     const userBody = req.body;
     try{
-        console.log("Update User");
         let {email, oldPassword,newPassword} = userBody;
         email = validation.checkEmail(email, 'User email');
         oldPassword = validation.checkPassword(oldPassword, 'User password');
@@ -59,8 +58,8 @@ router.post('/changeUserPW', async (req,res) => {
         let user = await userData.getUserByEmail(email);
         const resBy = await bcrypt.compare(oldPassword, user.password);
         if(!resBy) return res.status(404).json({error: "Invalid password"});
-        user.password = bcrypt.hash(newPassword, 10);
-        user = userData.updateUser(user._id,user);
+        user.password = (await bcrypt.hash(newPassword, 10)).toString();
+        user = userData.updateUser(user._id.toString(),user);
         res.status(200).json(user);
     }catch(e){
         console.log(e);

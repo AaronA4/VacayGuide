@@ -69,7 +69,8 @@ const exportedMethods = {
     },
 
     async updateUser(id, userObj) {
-        let { firstName, lastName, password, schedules, invites, uid } = userObj;
+        console.log(id);
+        let {_id, firstName, lastName, password, schedules, invites, uid } = userObj;
         id = validation.checkId(id, "id");
         firstName = validation.checkString(firstName, "First Name");
         lastName = validation.checkString(lastName, "Last Name");
