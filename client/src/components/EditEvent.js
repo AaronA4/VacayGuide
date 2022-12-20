@@ -5,6 +5,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 import {AuthContext} from '../firebase/Auth';
+import { getSessionToken } from '../firebase/FirebaseFunctions';
 import { checkString, checkCost, checkDate } from '../validation.js';
 
 function EditEvent() {
@@ -15,7 +16,11 @@ function EditEvent() {
   const [eventData, setEventData] = useState(undefined)
   const [validated, setValidated] = useState(false);
   const {currentUser} = useContext(AuthContext);
-  const navigate = useNavigate();
+  const accessToken = getSessionToken();
+  var headers = {headers: {
+    email : currentUser.email,
+    accesstoken: accessToken
+  }};  const navigate = useNavigate();
   let {scheduleId, eventId} = useParams();
 
 
@@ -25,7 +30,7 @@ function EditEvent() {
       try {
         setLoading(true);
         setError(false);
-        const { data } = await axios.get('http://localhost:3001/schedules/' + scheduleId);
+        const { data } = await axios.get('http://localhost:3001/schedules/' + scheduleId, headers);
         setScheduleData(data);
         setEventData(data.events.find(event => event.name == eventId));
         setLoading(false);
@@ -77,6 +82,8 @@ function EditEvent() {
     }
 
     if (flag === true){
+      let form_data =  new FormData();
+      let file = form.image.files[0]
       let body = {
         userId: currentUser.email,
         name: name,
@@ -86,16 +93,24 @@ function EditEvent() {
         endTime: endTime
       }; 
 
+      for (let key in body) {
+        form_data.append(key, body[key]);
+      }
+
+      form_data.append('file', file);
+
+      headers['Content-Type'] = 'multipart/form-data';
+
       try {
         let newEvent = await axios({
           method: 'patch',
           url: '/schedules/' + scheduleId + '/' + eventId,
           baseURL: 'http://localhost:3001',
-          headers: {'Content-Type' : 'application/json'},
-          data: body
+          headers: headers,
+          data: form_data
         })
 
-        navigate('/schedules/' + scheduleId + '/' + eventId);
+        navigate('/schedules/' + scheduleId + '/event/' + eventId);
       }catch(e) {
         setCustomError(e.response.statusText);
       }
@@ -104,6 +119,12 @@ function EditEvent() {
     setValidated(true);
   };
 
+  const styles = {
+    image: {
+        maxWidth: '25vw',
+        maxHeight: '50vh'
+    }
+}
     if(loading) {
       return (<p>Loading...</p>)
     }else if(error) {
@@ -152,6 +173,7 @@ function EditEvent() {
               </Form.Text>
             </Form.Group>
 
+            <img src={'http://localhost:3001/public/images/'+eventData.image} alt='event image' style={styles.image}></img>
             <Form.Group className="mb-3" controlId="image">
               <Form.Label>Image</Form.Label>
               <Form.Control type="file" placeholder="Image" />

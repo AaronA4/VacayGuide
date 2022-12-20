@@ -37,9 +37,9 @@ function App() {
           <Route path='/schedules' element={<PrivateRoute />}>
             <Route path='/schedules' element={<Schedules />} />
             <Route path='/schedules/:scheduleId/calendar' element={<Calendar />} />
-            <Route path='/schedules/:scheduleId/:eventId' element={<Event />} />
-            <Route path='/schedules/:scheduleId/calendar/createEvent' element={<CreateEvent />} />
-            <Route path='/schedules/:scheduleId/calendar/editEvent/:eventId' element={<EditEvent />} />
+            <Route path='/schedules/:scheduleId/event/:eventId' element={<Event />} />
+            <Route path='/schedules/:scheduleId/createEvent' element={<CreateEvent />} />
+            <Route path='/schedules/:scheduleId/editEvent/:eventId' element={<EditEvent />} />
           </Route>
           <Route path='/signin' element={<SignIn />} />
           <Route path='/signup' element={<SignUp />} />

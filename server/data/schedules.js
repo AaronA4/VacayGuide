@@ -3,6 +3,8 @@ const  schedules = mongoCollections.schedules;
 const {ObjectId} = require('mongodb');
 const  users  = require('./users');
 const validation = require('../validation');
+const fs = require('fs');
+const path = require('path')
 
 /**
  * 1. New Schedule created and inserted 
@@ -152,28 +154,28 @@ const exportedMethods = {
 
         const oldEvent = await this.getEvent(scheduleID, eventID);
         
-        if (name) {
+        if (name && name != 'undefined') {
             name = validation.checkString(name, "Event Name");
         }else {
             name = oldEvent.name;
         }
-        if (description) {
+        if (description && description != 'undefined') {
             description = validation.checkString(description, "Event Description");
         }else {
             description = oldEvent.description;
         }
-        if(cost) {
+        if(cost && cost != 'undefined') {
             cost = validation.checkCost(cost, "Cost");
         }else {
             cost = oldEvent.cost;
         }
-        if(startTime) {
+        if(startTime && startTime != 'undefined') {
             startTime = new Date(startTime);
             startTime = validation.checkDate(startTime, "Start Time");
         }else {
             startTime = oldEvent.startTime;
         }
-        if(endTime) {
+        if(endTime && endTime != 'undefined') {
             endTime = new Date(endTime);
             endTime = validation.checkDate(endTime, "End Time");
         }else {
@@ -189,6 +191,17 @@ const exportedMethods = {
         }
         if(image) {
             image = validation.checkString(image, 'Image name')
+            try{
+                fs.unlink(path.join(__dirname, '../public/images/'+oldEvent.image), (err) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                
+                    console.log("Delete old image successfully.");
+                });
+            }catch(e){
+                console.log(e)
+            }
         }else {
             image = oldEvent.image
         }

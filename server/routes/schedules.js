@@ -180,7 +180,7 @@ router.get('/:scheduleId/:eventId', async (req,res) => {
     }
 });
 
-router.post('/:scheduleId/createEvent', async (req, res) => {
+router.post('/:scheduleId/createEvent', upload, async (req, res) => {
     var scheduleId;
     var userId;
     var name;
@@ -189,37 +189,95 @@ router.post('/:scheduleId/createEvent', async (req, res) => {
     var startTime;
     var endTime;
     var file;
-    var errorFlag = false
+    var srcPath;
+    var destPath;
 
-    upload(req, res, async (err) => {
-        if(req.file) file = req.file.filename;
-        if(err) errorFlag = err;
+    try {
+        userId = validation.checkEmail(req.body.userId, "User ID");
+        scheduleId = validation.checkId(req.params.scheduleId, "Schedule ID");
+        name = validation.checkString(req.body.name, "Event Name");
+        description = validation.checkString(req.body.description, "Event Description");
+        cost = validation.checkCost(req.body.cost, "Cost");
+        if (req.body.startTime) startTime = new Date(parseInt(req.body.startTime));
+        startTime = validation.checkDate(startTime, "Start Time");
+        if (req.body.endTime) endTime = new Date(parseInt(req.body.endTime));
+        endTime = validation.checkDate(endTime, "End Time");
+        if (endTime < startTime) throw `Error: End time must come after start time!`;
+        file = validation.checkString(req.file.filename, 'Image name');
+        srcPath = path.join(__dirname, '../public/uploads/'+file);
+        destPath = path.join(__dirname, '../public/images/'+file+".jpg");
+    }catch(e) {
+        fs.unlink(srcPath, (err) => {
+            if (err) {
+                console.log(err);
+            }
+        
+            console.log("Delete upload successfully.");
+        });
+        return res.status(400).json({error: e});
+    }
 
-        userId = req.body.userId;
-        name = req.body.name;
-        description = req.body.description;
-        cost = req.body.cost;
-        startTime = req.body.startTime;
-        endTime = req.body.endTime;
+    try{
+        gm(srcPath)
+            .resizeExact(540, 540)
+            .noProfile()
+            .write(destPath, function (err) {
+                if (!err) console.log('image done');
+                if (err) console.log(err);
+                fs.unlink(srcPath, (err) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                
+                    console.log("Delete File successfully.");
+                });
+            });
+        const newEvent = await scheduleData.createEvent(userId, scheduleId, name, description, cost, startTime, endTime, file+'.jpg');
+        return res.status(200).json(newEvent);
+    }catch(e){
+        fs.unlink(destPath, (err) => {
+            if (err) {
+                console.log(err);
+            }
+        
+            console.log("Delete image successfully.");
+        });
+        return res.status(404).json({error: e})
+    } 
+});
 
-        try {
-            if(errorFlag) return res.status(400).json({error: err});;
-            userId = validation.checkEmail(userId, "User ID");
-            scheduleId = validation.checkId(req.params.scheduleId, "Schedule ID");
-            name = validation.checkString(name, "Event Name");
-            description = validation.checkString(description, "Event Description");
-            cost = validation.checkCost(cost, "Cost");
-            if (startTime) startTime = new Date(parseInt(startTime));
-            startTime = validation.checkDate(startTime, "Start Time");
-            if (endTime) endTime = new Date(parseInt(endTime));
-            endTime = validation.checkDate(endTime, "End Time");
-            if (endTime < startTime) throw `Error: End time must come after start time!`;
-            file = validation.checkString(file, 'Image name');
-        }catch(e) {
-            return res.status(400).json({error: e});
+router.patch('/:scheduleId/:eventId', upload, async (req,res) => {
+    let scheduleId;
+    let eventId;
+    let userId;
+    let file;
+    var srcPath;
+    var destPath;
+
+    try{
+        if (req.file) {
+            file = validation.checkString(req.file.filename, "Image name");
+            srcPath = path.join(__dirname, '../public/uploads/'+file);
+            destPath = path.join(__dirname, '../public/images/'+file+".jpg");
         }
+        userId = validation.checkEmail(req.body.userId, "User ID");
+        scheduleId = validation.checkId(req.params.scheduleId, "Schedule ID");
+        eventId = validation.checkString(req.params.eventId, "Event ID");
+    }catch(e) {
+        fs.unlink(srcPath, (err) => {
+            if (err) {
+                console.log(err);
+            }
+        
+            console.log("Delete upload successfully.");
+        });
+        return res.status(400).json({error: e});
+    }
 
-        try{
+    try{
+        let file;
+        if (req.file) {
+            file = req.file.filename;
             var srcPath = path.join(__dirname, '../public/uploads/'+file);
             var destPath = path.join(__dirname, '../public/images/'+file+".jpg");
             gm(srcPath)
@@ -228,33 +286,25 @@ router.post('/:scheduleId/createEvent', async (req, res) => {
                 .write(destPath, function (err) {
                     if (!err) console.log('image done');
                     if (err) console.log(err);
+                    fs.unlink(srcPath, (err) => {
+                        if (err) {
+                            console.log(err);
+                        }
+                    
+                        console.log("Delete upload successfully.");
+                    });
                 });
-            const newEvent = await scheduleData.createEvent(userId, scheduleId, name, description, cost, startTime, endTime, file+'.jpg');
-            return res.status(200).json(newEvent);
-        }catch(e){
-            return res.status(404).json({error: e})
         }
-    });
- 
-});
-
-router.patch('/:scheduleId/:eventId', async (req,res) => {
-    let scheduleId;
-    let eventId;
-    let userId;
-
-    try{
-        userId = validation.checkEmail(req.body.userId, "User ID");
-        scheduleId = validation.checkId(req.params.scheduleId, "Schedule ID");
-        eventId = validation.checkString(req.params.eventId, "Event ID");
-    }catch(e) {
-        return res.status(400).json({error: e});
-    }
-
-    try{
-        const updatedEvent = await scheduleData.updateEvent(userId, scheduleId, eventId, req.body.name, req.body.description, req.body.cost, req.body.startTime, req.body.endTime, req.body.attendees);
+        const updatedEvent = await scheduleData.updateEvent(userId, scheduleId, eventId, req.body.name, req.body.description, req.body.cost, req.body.startTime, req.body.endTime, req.body.attendees, file+'.jpg');
         return res.status(200).json(updatedEvent);
     }catch(e){
+        fs.unlink(destPath, (err) => {
+            if (err) {
+                console.log(err);
+            }
+        
+            console.log("Delete image successfully.");
+        });
         return res.status(404).json({error: e})
     }
 });

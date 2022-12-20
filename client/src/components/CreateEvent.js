@@ -5,6 +5,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import axios from 'axios';
 import {AuthContext} from '../firebase/Auth';
+import { getSessionToken } from '../firebase/FirebaseFunctions';
 import { checkString, checkCost, checkDate } from '../validation.js';
 
 function CreateEvent() {
@@ -14,6 +15,11 @@ function CreateEvent() {
   const [scheduleData, setScheduleData] = useState(undefined);
   const [validated, setValidated] = useState(false);
   const {currentUser} = useContext(AuthContext);
+  const accessToken = getSessionToken();
+  var headers = {headers: {
+    email : currentUser.email,
+    accesstoken: accessToken
+  }};  
   const navigate = useNavigate();
   let {scheduleId} = useParams();
 
@@ -23,7 +29,7 @@ function CreateEvent() {
       try {
         setLoading(true);
         setError(false);
-        const { data } = await axios.get('http://localhost:3001/schedules/' + scheduleId);
+        const { data } = await axios.get('http://localhost:3001/schedules/' + scheduleId, {}, headers);
         setScheduleData(data);
         setLoading(false);
       } catch (e) {
@@ -87,12 +93,14 @@ function CreateEvent() {
 
       form_data.append('file', file);
 
+      headers['Content-Type'] = 'multipart/form-data';
+
       try {
         let newEvent = await axios({
           method: 'post',
           url: '/schedules/' + scheduleId + '/createEvent',
           baseURL: 'http://localhost:3001',
-          headers: {'Content-Type' : 'multipart/form-data'},
+          headers: headers,
           data: form_data
         })
 
