@@ -110,9 +110,6 @@ const exportedMethods = {
             if (userSchedules[i].toString() === scheduleId)
                 throw "This invite already exists";
         }
-        userSchedules.push(scheduleId);
-        user.schedules.userSchedules = userSchedules;
-        await this.updateUser(userId, user);
         await userCollection.updateOne(
             { _id: ObjectId(userId) },
             { $addToSet: { invites: invite } }

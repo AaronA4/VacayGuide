@@ -177,6 +177,9 @@ async function main() {
       // Invite 
       await usersData.addInvite(guest2.id.toString(), {scheduleId: schedule2._id.toString(), senderId: host2.id.toString()});
       console.log("Invitation Sent");
+
+      await usersData.addInvite(guest2.id.toString(), {scheduleId: schedule1._id.toString(), senderId: host1.id.toString()});
+      console.log("Invitation Sent");
   }
 
   try{
