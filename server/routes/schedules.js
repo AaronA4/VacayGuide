@@ -70,7 +70,7 @@ router.post('/', async (req,res) => {
 
 router.get('/:scheduleId', async (req,res) => {
     try{
-			// if(!req.session.user) return res.status(403).json("User not logged in.");
+			if(!req.session.email) return res.status(403).json("User not logged in.");
         let scheduleId = validation.checkId(req.params.scheduleId, "Schedule Id");
         const schedule = await getScheduleById(scheduleId);
 
@@ -88,7 +88,7 @@ router.get('/:scheduleId', async (req,res) => {
 //returns all the attendees that corresponds to this schedule id
 router.get('/:scheduleId/invite/', async (req,res) => {
     try{
-			// if(!req.session.user) return res.status(403).json("User not logged in.");
+			if(!req.session.email) return res.status(403).json("User not logged in.");
         let scheduleId = req.params.scheduleId;
         scheduleId = validation.checkId(scheduleId, "Schedule Id");
         const schedule = await getScheduleById(scheduleId);
@@ -104,7 +104,7 @@ router.get('/:scheduleId/invite/', async (req,res) => {
 //sender Id of invite is unknnown
 router.post('/:scheduleId/invite/:userId', async (req,res) => {
     try{
-			if(!req.session.user) return res.status(403).json("User not logged in.");
+			if(!req.session.email) return res.status(403).json("User not logged in.");
         let {scheduleId, userId} = req.params;
         scheduleId = validation.checkId(scheduleId, "Schedule Id");
         userId = validation.checkId(userId, "User Id");

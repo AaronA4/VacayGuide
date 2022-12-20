@@ -30,17 +30,7 @@ app.use(session({
 /**
  * Dummy Validation of session
  */
-app.use(async (req, res, next) => {
-  let date = new Date().toUTCString();
-  let authStr;
-  if(!req.session.user){
-      authStr = "(Non-Authenticated User)";
-  }else{
-      authStr = "(Authenticated User)";
-  }
-  console.log(`[${date}]: ${req.method} ${req.originalUrl} ${authStr}`);
-  next();
-});
+
 
 var public = path.join(__dirname, '/public');
 app.use("/public", express.static(public));
@@ -55,6 +45,17 @@ app.use('/logout', decodeToken);
 app.use('/changeUserPW', decodeToken);
 app.use('/changeUserInfo', decodeToken);
 
+app.use(async (req, res, next) => {
+  let date = new Date().toUTCString();
+  let authStr;
+  if(!req.session.email){
+      authStr = "(Non-Authenticated User)";
+  }else{
+      authStr = "(Authenticated User)";
+  }
+  console.log(`[${date}]: ${req.method} ${req.originalUrl} ${authStr}`);
+  next();
+});
 
 
 configRoutes(app);
