@@ -18,7 +18,7 @@ const gm = require('gm');
 const path = require('path')
 
 router.get('/', async (req,res) => {
-//   if(!req.session.user) return res.status(403).json("User not logged in.");
+   if(!req.session.email) return res.status(403).json("User not logged in.");
     try{
 	    
 				let email = validation.checkEmail(req.session.email);
@@ -33,7 +33,7 @@ router.get('/', async (req,res) => {
 
 router.post('/', async (req,res) => {
 
-	//   if(!req.session.user) return res.status(403).json("User not logged in.");
+	  if(!req.session.email) return res.status(403).json("User not logged in.");
     const scheduleBody = req.body;
     try{
 			if(scheduleBody === undefined) throw "Schedule can't be created because of insufficient data";
