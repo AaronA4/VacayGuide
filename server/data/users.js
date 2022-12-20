@@ -35,7 +35,7 @@ const exportedMethods = {
         res = await userCollection.find({
             '$text': {
                 '$search': searchTerm
-            }}).toArray();
+            }}).project({"firstName": 1, "lastName": 1, "email": 1}).toArray();
         return res;
     },
 
