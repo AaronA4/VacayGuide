@@ -11,12 +11,21 @@ function AddSchedule() {
     };
 
     async function createSchedule() {
+        let body = {
+            userId: currentUser.email,
+            name: formData.name,
+            creator: formData.creator,
+            attendees: formData.attendees,
+            events: formData.events
+        }
         try {
-            const {data} = await axios.post('http://localhost:3000/schedules', {
-                method:'POST',
-                mode: 'cors',
-                body: formData
-            });
+            let newSchedule = await axios({
+                method: 'post',
+                url: '/schedules',
+                baseURL: 'http://localhost:3001',
+                headers: {'Content-Type': 'application/json'},
+                data: body
+            })
         } catch (e) {
             console.log(e);
         }

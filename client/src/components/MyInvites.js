@@ -4,6 +4,7 @@ import '../App.css';
 import axios from 'axios';
 import Card from 'react-bootstrap/Card';
 import {AuthContext} from '../firebase/Auth';
+import { getSessionToken } from '../firebase/FirebaseFunctions';
 
 let invite = null;
 
@@ -16,14 +17,15 @@ function MyInvites() {
 
     
     const email = firebase.auth().currentUser.email;
+    const accessToken = getSessionToken();
     const headers = {headers: {
-      email : email
+      email : email,
+      accesstoken: accessToken
     }};
-    console.log(JSON.stringify(firebase.auth().currentUser));
+
 
     async function pullInvites() {
       try {
-        console.log("sai "+ email);
         const {data: invites} = await axios.get(myInvitesUrl, headers); 
         console.log(invites);
         setInvites(invites);

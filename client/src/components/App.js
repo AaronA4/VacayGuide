@@ -15,6 +15,7 @@ import EditEvent from './EditEvent';
 import {AuthProvider} from '../firebase/Auth';
 import PrivateRoute from './PrivateRoute';
 import MyInvites from './MyInvites';
+import SearchUsers from './SearchUsers';
 
 function App() {
   return (
@@ -42,8 +43,10 @@ function App() {
           </Route>
           <Route path='/signin' element={<SignIn />} />
           <Route path='/signup' element={<SignUp />} />
-
-          <Route path='/myInvites' element={<MyInvites />} />
+          <Route path='/users' element={<SearchUsers />} />
+          <Route path='/myInvites' element={<PrivateRoute />}>
+            <Route path='/myInvites' element={<MyInvites />} />
+          </Route>
         </Routes>
       </Router>
     </AuthProvider>
