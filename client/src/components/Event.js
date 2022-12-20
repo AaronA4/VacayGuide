@@ -14,7 +14,8 @@ function Event () {
     const [error, setError] = useState(false);
     const [eventData, setEventData] = useState(undefined);
     const [attending, setAttending] = useState(false);
-    const [userDate, setUserData] = useState(undefined);
+    const [userData, setUserData] = useState(undefined);
+    const [showBtnToggle, setBtnToggle] = useState(false);
     const {currentUser} = useContext(AuthContext);
     const accessToken = getSessionToken();
     const headers = {headers: {
@@ -105,9 +106,12 @@ function Event () {
                     <Card.Text>Cost: ${eventData.cost}</Card.Text>
                     <Card.Text>Start Time: {new Date(eventData.startTime).toLocaleString()}</Card.Text>
                     <Card.Text>End Time: {new Date(eventData.endTime).toLocaleString()}</Card.Text>
-                    <ListGroup>Attendees:
-                        {buildAttendees(eventData.attendees)}
-                    </ListGroup>
+                    <Button onClick={()=> setBtnToggle(!showBtnToggle)}>Show Attendees</Button>
+                    {showBtnToggle &&
+                        <ListGroup>Attendees:
+                            {buildAttendees(eventData.attendees)}
+                        </ListGroup>
+                    }
                     <br/>
                     {!attending && <Button onClick={() => join(eventData)}>Join Event</Button>}
                     {attending && <Button onClick={() => leave(eventData)}>Leave Event</Button>}

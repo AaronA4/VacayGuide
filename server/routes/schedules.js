@@ -23,8 +23,11 @@ router.get('/', async (req,res) => {
 	    
 				let email = validation.checkEmail(req.session.email);
 				const user = await userData.getUserByEmail(email);
-        const scheduleList = user.schedules.ownedSchedules.concat(user.schedules.userSchedules);
-				console.log()
+        const scheduleIds = user.schedules.ownedSchedules.concat(user.schedules.userSchedules);
+				let scheduleList = [];
+				for(let i = 0;i<scheduleIds.length; ++i){
+						scheduleList.push(await scheduleData.getScheduleById(scheduleIds[i]));
+				}
         res.status(200).json(scheduleList);
     }catch(e){
         res.status(500).json({error: e});

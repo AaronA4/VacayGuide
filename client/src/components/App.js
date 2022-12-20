@@ -5,6 +5,8 @@ import Account from './Account';
 import Home from './Home';
 import Landing from './Landing';
 import Schedules from './Schedules';
+import Schedule from './Schedule';
+import AddSchedule from './AddSchedule';
 import Navigation from './Navigation';
 import SignIn from './SignIn';
 import SignUp from './SignUp';
@@ -36,6 +38,8 @@ function App() {
           </Route>
           <Route path='/schedules' element={<PrivateRoute />}>
             <Route path='/schedules' element={<Schedules />} />
+            <Route path='/schedules/:id' element={<Schedule />} />
+            <Route path='/schedules/createSchedule' element={<AddSchedule />} />
             <Route path='/schedules/:scheduleId/calendar' element={<Calendar />} />
             <Route path='/schedules/:scheduleId/event/:eventId' element={<Event />} />
             <Route path='/schedules/:scheduleId/createEvent' element={<CreateEvent />} />

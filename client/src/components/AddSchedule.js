@@ -1,34 +1,33 @@
 import axios from 'axios';
 import React, {useState, useContext, useEffect} from 'react';
 import {AuthContext} from '../firebase/Auth';
+import firebase from 'firebase/app';
+import { getSessionToken } from '../firebase/FirebaseFunctions';
 
 function AddSchedule() {
-    const currentUser = useContext(AuthContext);
-    const [formData, setFormData] = useState({name: '', creator: currentUser.email, attendees: [], events: []});
+	const {currentUser} = useContext(AuthContext);
+		const [name,setName] = useState("");
+		const [userEmail,setUserEmail] = useState(currentUser.email);
 
-    const handleChange = (e) => {
-        setFormData((prev) => ({...prev, [e.target.name]: e.target.value}));
-    };
+		const email = firebase.auth().currentUser.email;
+    const accessToken = getSessionToken();
+    const headers = {headers: {
+      email : email,
+      accesstoken: accessToken
+    }};
 
-    async function createSchedule() {
-        let body = {
-            userId: currentUser.email,
-            name: formData.name,
-            creator: formData.creator,
-            attendees: formData.attendees,
-            events: formData.events
-        }
-        try {
-            let newSchedule = await axios({
-                method: 'post',
-                url: '/schedules',
-                baseURL: 'http://localhost:3001',
-                headers: {'Content-Type': 'application/json'},
-                data: body
-            })
-        } catch (e) {
-            console.log(e);
-        }
+
+
+    const handleChange = async (e) => {
+				e.preventDefault();
+				setUserEmail(currentUser.email);
+				setName(name);
+				console.log(currentUser);
+			try {
+				let newSchedule = await axios.post("http://localhost:3001/schedules/",{name,userEmail},headers);
+		} catch (e) {
+				console.log(e);
+		}
     };
 
     return (
@@ -38,18 +37,17 @@ function AddSchedule() {
                     <label>
                         Schedule Name:
                         <input
-                            // onChange={(e) => handleChange(e)}
                             className='form-control'
                             required
                             name='name'
                             type='text'
                             placeholder='Name'
+														value={name}
+														onChange={(e) => setName(e.target.value)}
                         />
                     </label>
                 </div>
-                <button onClick={createSchedule}>
-                    Submit
-                </button>
+								<input type="submit"/>
             </form>
         </div>
     )
