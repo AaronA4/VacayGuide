@@ -7,31 +7,43 @@ function SearchUsers() {
     const [loading, setLoading] = useState(false);
     const [usersData, setUsersData] = useState([]);
     const [searchTerm, setSearchTerm] = useState(null);
+    let list = null;
 
     useEffect(() => {
         console.log('User Search useEffect')
         async function fetchData() {
-          try {
-            if(searchTerm !== null){
-                console.log(searchTerm);
-                const {data} = await axios.get(`http://localhost:3001/users/${searchTerm}`);
-                setUsersData(data);
-                setLoading(false);
-            } else {
-                setUsersData([]);
-                setLoading(false);
+            try {
+                if (searchTerm !== null) {
+                    console.log(searchTerm);
+                    const { data } = await axios.get(`http://localhost:3001/users/${searchTerm}`);
+                    setUsersData(data);
+                    setLoading(false);
+                } else {
+                    setUsersData([]);
+                    setLoading(false);
+                }
+            } catch (e) {
+                console.log(e);
             }
-          } catch (e) {
-            console.log(e);
-          }
         }
         fetchData();
-      }, [searchTerm]);
+    }, [searchTerm]);
 
     const handleSearch = (event) => {
         event.preventDefault();
         setSearchTerm(document.getElementById('searchTerm').value);
     }
+
+    list =
+        usersData.map((user) => {
+            return (
+                <li>
+                    <h2>First Name: {user.firstName}</h2>
+                    <h2>Last Name: {user.lastName}</h2>
+                    <h2>Email: {user.email}</h2>
+                </li>
+            )
+        });
 
     if (loading) {
         return (
@@ -58,7 +70,6 @@ function SearchUsers() {
             </div>
         );
     } else {
-        console.log(usersData);
         return (
             <div className="content">
                 <form onSubmit={handleSearch}>
@@ -77,6 +88,11 @@ function SearchUsers() {
                     </div>
                     <button type='submit'>Search</button>
                 </form>
+                <div>
+                    <ul>
+                        {list}
+                    </ul>
+                </div>
             </div>
         );
     }
