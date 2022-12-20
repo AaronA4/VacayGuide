@@ -278,11 +278,7 @@ router.patch('/:scheduleId/:eventId', upload, async (req,res) => {
     }
 
     try{
-        let file;
-        if (req.file) {
-            file = req.file.filename;
-            var srcPath = path.join(__dirname, '../public/uploads/'+file);
-            var destPath = path.join(__dirname, '../public/images/'+file+".jpg");
+        if (file) {
             gm(srcPath)
                 .resizeExact(540, 540)
                 .noProfile()
