@@ -51,7 +51,7 @@ function Event () {
         let attendeeList = [];
         let item;
         for (let attendee of attendees){
-            attendeeList.push(<ListGroup.Item>{attendee}</ListGroup.Item>);
+            attendeeList.push(<ListGroup.Item key = {attendee}>{attendee}</ListGroup.Item>);
         }
 
         return attendeeList
@@ -60,13 +60,18 @@ function Event () {
     const join = async (event) => {
         event.attendees.push(currentUser.email)
         let body =  {userId: currentUser.email, attendees: event.attendees};
-        let newEvent = await axios({
-            method: 'patch',
-            url: '/schedules/' + scheduleId + '/' + eventId,
-            baseURL: 'http://localhost:3001',
-            headers: {'Content-Type' : 'application/json'},
-            data: body
-        })
+        let newEvent = await axios.patch(
+            `http://localhost:3001/schedules/${scheduleId}/event/${eventId}`,
+            body,
+            headers
+        )
+        // let newEvent = await axios({
+        //     method: 'patch',
+        //     url: '/schedules/' + scheduleId + '/' + eventId,
+        //     baseURL: 'http://localhost:3001',
+        //     headers: {'Content-Type' : 'application/json'},
+        //     data: body
+        // })
         setAttending(true);
     }
 
@@ -74,21 +79,26 @@ function Event () {
         let attendeeIndex = event.attendees.findIndex(attendee => attendee == currentUser.email);
         event.attendees.splice(attendeeIndex, 1);
         let body =  {userId: currentUser.email, attendees: event.attendees};
-        let newEvent = await axios({
-            method: 'patch',
-            url: '/schedules/' + scheduleId + '/' + eventId,
-            baseURL: 'http://localhost:3001',
-            headers: {'Content-Type' : 'application/json'},
-            data: body
-        })
+        let newEvent = await axios.patch(
+            `http://localhost:3001/schedules/${scheduleId}/event/${eventId}`,
+            body,
+            headers
+        )
+        // let newEvent = await axios({
+        //     method: 'patch',
+        //     url: '/schedules/' + scheduleId + '/' + eventId,
+        //     baseURL: 'http://localhost:3001',
+        //     headers: {'Content-Type' : 'application/json'},
+        //     data: body
+        // })
         setAttending(false);
     }
 
     const styles = {
-        crd: {
-            width: '25vw',
-            height: '30vh'
-        },
+        // crd: {
+        //     width: '25vw',
+        //     height: '30vh'
+        // },
         crdImg: {
             maxWidth: '25vw',
             maxHeight: '50vh'
@@ -115,7 +125,7 @@ function Event () {
                             {buildAttendees(eventData.attendees)}
                         </ListGroup>
                     }
-                    <br/>
+
                     {!attending && <Button onClick={() => join(eventData)}>Join Event</Button>}
                     {attending && <Button onClick={() => leave(eventData)}>Leave Event</Button>}
                 </Card.Body>

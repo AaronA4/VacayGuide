@@ -18,6 +18,7 @@ import {AuthProvider} from '../firebase/Auth';
 import PrivateRoute from './PrivateRoute';
 import MyInvites from './MyInvites';
 import SearchUsers from './SearchUsers';
+import InvitedUsers from './InvitedUsers';
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
             <Route path='/schedules' element={<Schedules />} />
             <Route path='/schedules/:scheduleId' element={<Schedule />} />
             <Route path='/schedules/createSchedule' element={<AddSchedule />} />
+            <Route path='/schedules/:scheduleId/invite' element={<InvitedUsers />} />
             <Route path='/schedules/:scheduleId/calendar' element={<Calendar />} />
             <Route path='/schedules/:scheduleId/event/:eventId' element={<Event />} />
             <Route path='/schedules/:scheduleId/createEvent' element={<CreateEvent />} />

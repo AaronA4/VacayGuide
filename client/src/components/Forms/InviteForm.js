@@ -1,10 +1,10 @@
-import React,{useState} from 'react';
-
+import React,{useState, useContext} from 'react';
+import axios from 'axios';
 import '../../App.css';
 import { useParams } from 'react-router-dom';
-import {AuthContext} from '../firebase/Auth';
+import {AuthContext} from '../../firebase/Auth';
 import firebase from 'firebase/app';
-import { getSessionToken } from '../firebase/FirebaseFunctions';
+import { getSessionToken } from '../../firebase/FirebaseFunctions';
 
 
 function InviteForm(){
@@ -32,8 +32,8 @@ function InviteForm(){
   }
 	return (
 		<div>
-			<h1>Send Invites</h1>
-			<h2>Please enter invitee email address</h2>
+			<h3>Send Invites</h3>
+			<h4>Please enter invitee email address</h4>
 		<form onSubmit={handleSubmit}>
 			<label>
 				Enter User email:

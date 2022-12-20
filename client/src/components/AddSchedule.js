@@ -18,7 +18,7 @@ function AddSchedule() {
 
 
 
-    const handleChange = async (e) => {
+    const handleSubmit = async (e) => {
 				e.preventDefault();
 				setUserEmail(currentUser.email);
 				setName(name);
@@ -32,7 +32,7 @@ function AddSchedule() {
 
     return (
         <div>
-            <form onSubmit={handleChange}>
+            <form onSubmit={handleSubmit}>
                 <div className='form-group'>
                     <label>
                         Schedule Name:
