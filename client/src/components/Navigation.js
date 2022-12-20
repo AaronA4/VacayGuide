@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import { AuthContext } from '../firebase/Auth';
-import SignOutButton from './SignOut';
+import {doSignOut} from '../firebase/FirebaseFunctions';
 //import '/bootstrap/dist/css/bootstrap.css';
 
 const Navigation = () => {
@@ -44,10 +44,10 @@ const NavigationAuth = () => {
           <li className="nav-item">
             <NavLink className="nav-link" to='/users'>Users</NavLink>
           </li>
+          <li className="nav-item">
+            <NavLink className="nav-link" to='/login' onClick={doSignOut}>Signout</NavLink>
+          </li>
         </ul>
-        <div className="nav-signout me-2">
-          <SignOutButton />
-        </div>
       </div>
     </nav>
   );
@@ -75,13 +75,13 @@ const NavigationNonAuth = () => {
           <li className="nav-item">
             <NavLink className="nav-link" to='/users'>Users</NavLink>
           </li>
+          <li className="nav-item">
+            <NavLink className="nav-link" to='/signup'>Sign-up</NavLink>
+          </li>
+          <li className="nav-item">
+            <NavLink className="nav-link" to='/signin'>Sign-In</NavLink>
+          </li>
         </ul>
-      </div>
-      <div className="nav-signup me-2">
-        <NavLink to='/signup'>Sign-up</NavLink>
-      </div>
-      <div className="nav-signin me-4">
-        <NavLink to='/signin'>Sign-In</NavLink>
       </div>
     </nav>
   );

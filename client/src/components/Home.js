@@ -1,25 +1,47 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import '../App.css';
 import { AuthContext } from '../firebase/Auth';
 import Account from './Account';
 import MyInvites from './MyInvites';
 import Card from 'react-bootstrap/Card';
+import Schedules from './Schedules';
 
 function Home() {
   const { currentUser } = useContext(AuthContext);
+  const [loading, setLoading] = useState(false);
+  const doReload = () => {
+    setLoading(true);
+    setLoading(false);
+  }
+  if(loading){
+    console.log("HERE");
+    return(
+      <div>
+        Loading...
+      </div>
+    )
+  }
   return (
-    <div>
-      <h2>Welcome {currentUser.displayName}</h2>
-      <div className="container">
-        <div className="row">
+    <div className="container">
+      <h1>Welcome {currentUser.displayName}</h1>
+      <div className="row">
+        <div class="col">
           <Card id="Account">
             <Card.Body>
-              <Account />
+              <Card.Title>{currentUser.displayName}</Card.Title>
+              <Card.Text>{currentUser.email}</Card.Text>
             </Card.Body>
           </Card>
-          <Card id="Invites">
+          <Card id="Invites" onClick={doReload}>
             <Card.Body>
               <MyInvites />
+            </Card.Body>
+          </Card>
+        </div>
+        <div class="col">
+          <Card id="Schedules">
+            <Card.Body>
+              <Schedules />
             </Card.Body>
           </Card>
         </div>
