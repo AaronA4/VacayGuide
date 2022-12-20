@@ -7,7 +7,7 @@ class Middleware{
 			const token = req.headers.accesstoken;
 			const decodeValue = await admin.auth().verifyIdToken(token);
 			if(decodeValue){
-				req.session.mail = decodeValue.email;
+				req.session.email = decodeValue.email;
 				req.session.save((err)=>{
 					if(err) next(err);
 					console.log(req.session.user);
