@@ -10,7 +10,7 @@ class Middleware{
 				req.session.email = decodeValue.email;
 				req.session.save((err)=>{
 					if(err) next(err);
-					console.log(req.session.user);
+					// console.log(req.session.user);
 				})
 				return next();
 			}
