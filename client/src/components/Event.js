@@ -23,17 +23,17 @@ function Event () {
       accesstoken: accessToken
     }};    
     let {scheduleId, eventId} = useParams();
-    let currentUserId;
+
     useEffect(() => {
       console.log('on load useEffect');
       async function fetchData() {
         try {
           setLoading(true);
             if(currentUser){
-                currentUserId = await axios.get('http://localhost:3001/userId/' + currentUser.email);
+                const currentUserData = await axios.get('http://localhost:3001/userId/' + currentUser.email, headers);
+                setUserData(currentUserData.data)
             }
-          const { data } = await axios.get('http://localhost:3001/schedules/' + scheduleId + '/' + eventId);
-          //const { user } = await axios.get('http://localhost:3001/')
+          const { data } = await axios.get('http://localhost:3001/schedules/' + scheduleId + '/' + eventId, headers);
           setEventData(data);
           setAttending(data.attendees.includes(currentUser.email));
           setLoading(false);
@@ -64,7 +64,7 @@ function Event () {
             method: 'patch',
             url: '/schedules/' + scheduleId + '/' + eventId,
             baseURL: 'http://localhost:3001',
-            headers: {'Content-Type' : 'application/json'},
+            headers: headers,
             data: body
         })
         setAttending(true);
@@ -78,7 +78,7 @@ function Event () {
             method: 'patch',
             url: '/schedules/' + scheduleId + '/' + eventId,
             baseURL: 'http://localhost:3001',
-            headers: {'Content-Type' : 'application/json'},
+            headers: headers,
             data: body
         })
         setAttending(false);
@@ -101,25 +101,29 @@ function Event () {
         return (<p>404 Page not found.</p>);
     }else {
         return (
-            <Card style={styles.crd}>
-                <Card.Img variant="top" src={'http://localhost:3001/public/images/'+eventData.image} alt="event image" style={styles.crdImg}/>
-                <Card.Body>
-                    <Card.Title>{eventData.name}</Card.Title>
-                    <Card.Text>Description: {eventData.description}</Card.Text>
-                    <Card.Text>Cost: ${eventData.cost}</Card.Text>
-                    <Card.Text>Start Time: {new Date(eventData.startTime).toLocaleString()}</Card.Text>
-                    <Card.Text>End Time: {new Date(eventData.endTime).toLocaleString()}</Card.Text>
-                    <Button onClick={()=> setBtnToggle(!showBtnToggle)}>Show Attendees</Button>
-                    {showBtnToggle &&
-                        <ListGroup>Attendees:
-                            {buildAttendees(eventData.attendees)}
-                        </ListGroup>
-                    }
-                    <br/>
-                    {!attending && <Button onClick={() => join(eventData)}>Join Event</Button>}
-                    {attending && <Button onClick={() => leave(eventData)}>Leave Event</Button>}
-                </Card.Body>
-            </Card>
+            <div>
+                {console.log(userData)}
+                {userData && userData.schedules.find(id => id == scheduleId) && <Link className='nav-link' to={'/schedules/' + scheduleId + '/editEvent/' + eventId}>Edit Event</Link>}
+                <Card style={styles.crd}>
+                    <Card.Img variant="top" src={'http://localhost:3001/public/images/'+eventData.image} alt="event image" style={styles.crdImg}/>
+                    <Card.Body>
+                        <Card.Title>{eventData.name}</Card.Title>
+                        <Card.Text>Description: {eventData.description}</Card.Text>
+                        <Card.Text>Cost: ${eventData.cost}</Card.Text>
+                        <Card.Text>Start Time: {new Date(eventData.startTime).toLocaleString()}</Card.Text>
+                        <Card.Text>End Time: {new Date(eventData.endTime).toLocaleString()}</Card.Text>
+                        <Button onClick={()=> setBtnToggle(!showBtnToggle)}>Show Attendees</Button>
+                        {showBtnToggle &&
+                            <ListGroup>Attendees:
+                                {buildAttendees(eventData.attendees)}
+                            </ListGroup>
+                        }
+                        <br/>
+                        {!attending && <Button onClick={() => join(eventData)}>Join Event</Button>}
+                        {attending && <Button onClick={() => leave(eventData)}>Leave Event</Button>}
+                    </Card.Body>
+                </Card>
+            </div>
         );
     }
 }

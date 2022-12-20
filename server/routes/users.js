@@ -109,7 +109,7 @@ router.get("/userId/:userEmail", async (req,res) => {
         let email = req.params.userEmail;
         email = validation.checkEmail(email);
         let user = await userData.getUserByEmail(email);
-        return res.status(200).json(user._id);
+        return res.status(200).json({id: user._id, schedules: user.schedules.ownedSchedules});
     }catch(e){
         return res.status(500).json({error: e});
     }
