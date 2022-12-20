@@ -103,7 +103,7 @@ function Event () {
     }else {
         return (
             <div>
-                {userData && userData.schedules.find(id => id == scheduleId) && <Link className='nav-link' to={'/schedules/' + scheduleId + '/editEvent/' + eventId}>Edit Event</Link>}
+                {userData && userData.schedules && userData.schedules.find(id => id == scheduleId) && <Link className='nav-link' to={'/schedules/' + scheduleId + '/editEvent/' + eventId}>Edit Event</Link>}
                 <Card style={styles.crd}>
                     <Card.Img variant="top" src={'http://localhost:3001/public/images/'+eventData.image} alt="event image" style={styles.crdImg}/>
                     <Card.Body>
