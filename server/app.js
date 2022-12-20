@@ -4,6 +4,7 @@ const configRoutes = require('./routes');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const cors = require('cors');
+const { decodeToken } = require('./middleware');
 
 const port = 3001;
 
@@ -25,8 +26,9 @@ app.use(session({
 })
 );
 
-// app.use('/schedules',middleware.decodeToken);
-
+/**
+ * Dummy Validation of session
+ */
 app.use(async (req, res, next) => {
   let date = new Date().toUTCString();
   let authStr;
@@ -38,6 +40,14 @@ app.use(async (req, res, next) => {
   console.log(`[${date}]: ${req.method} ${req.originalUrl} ${authStr}`);
   next();
 });
+
+/**
+ * Middleware Functionality for validating the token
+ */
+app.use('/invites*', decodeToken);
+app.use('/schedules', decodeToken);
+app.use('/changeUserPW', decodeToken);
+
 
 configRoutes(app);
 

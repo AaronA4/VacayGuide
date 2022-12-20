@@ -81,11 +81,21 @@ async function doSignOut() {
   });
 }
 
+function getSessionToken(){
+  try {
+    const authToken = JSON.parse(JSON.stringify(firebase.auth().currentUser)).stsTokenManager.accessToken;
+    return authToken;
+  } catch (e) {
+    console.log("Couldn't get firebase token from current session. Please sign in again " + e);
+  }
+}
+
 export {
   doCreateUserWithEmailAndPassword,
   doSignInWithEmailAndPassword,
   doPasswordReset,
   doPasswordUpdate,
   doSignOut,
-  doChangePassword
+  doChangePassword,
+  getSessionToken
 };
