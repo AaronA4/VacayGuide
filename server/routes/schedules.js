@@ -104,25 +104,27 @@ router.get('/:scheduleId/invite/', async (req,res) => {
     }
 });
 
-//sender Id of invite is unknnown
-router.post('/:scheduleId/invite/:userId', async (req,res) => {
+
+router.post('/:scheduleId/invite/', async (req,res) => {
     try{
 			if(!req.session.email) return res.status(403).json("User not logged in.");
-        let {scheduleId, userId} = req.params;
+        let {scheduleId} = req.params;
+				const userEmail = req.body.userEmail;
         scheduleId = validation.checkId(scheduleId, "Schedule Id");
-        userId = validation.checkId(userId, "User Id");
+				userEmail = validation.checkEmail(userEmail,"user email");
+      
         let schedule = await scheduleData.getScheduleById(scheduleId);
         if(schedule === undefined) throw `Schedule not found with id of ${scheduleId}`;
 
-        const user = await userData.getUserById(userId);
-        if(user === undefined) throw `User not found with id of ${userId}`;
+        const user = await userData.getUserByEmail(userEmail);
+        if(user === undefined) throw `User not found for this email ${userEmail}`;
         const invite = {scheduleId: scheduleId, senderId: schedule.creator};   
         
-        if(schedule.creator === userId) throw "Schedule creator can't invite themselves";
+        if(schedule.creator === user) throw "Schedule creator can't invite themselves";
         
-        await userData.addInvite(userId, invite);
+        await userData.addInvite(user._id.toString(), invite);
         
-        const updatedUser = await userData.getUserById(userId);
+        const updatedUser = await userData.getUserById(user._id.toString());
         return res.json(updatedUser);
     }catch(e){
         res.status(400).json({error: e});
@@ -278,11 +280,7 @@ router.patch('/:scheduleId/:eventId', upload, async (req,res) => {
     }
 
     try{
-        let file;
-        if (req.file) {
-            file = req.file.filename;
-            var srcPath = path.join(__dirname, '../public/uploads/'+file);
-            var destPath = path.join(__dirname, '../public/images/'+file+".jpg");
+        if (file) {
             gm(srcPath)
                 .resizeExact(540, 540)
                 .noProfile()
