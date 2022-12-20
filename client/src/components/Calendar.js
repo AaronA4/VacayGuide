@@ -1,9 +1,12 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import '../App.css';
 import {useParams} from 'react-router-dom';
 import axios from 'axios';
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
+import { getSessionToken } from '../firebase/FirebaseFunctions';
+import {AuthContext} from '../firebase/Auth';
+
 
 
 function Calendar() {
@@ -11,6 +14,12 @@ function Calendar() {
     const [error, setError] = useState(false);
     const [scheduleData, setScheduleData] = useState(undefined);
     const [myEvents, setEvents] = useState(undefined);
+    const {currentUser} = useContext(AuthContext);
+    const accessToken = getSessionToken();
+    const headers = {headers: {
+      email : currentUser.email,
+      accesstoken: accessToken
+    }};
     let {scheduleId} = useParams();
 
     const formatEvents = (events) => {
@@ -42,7 +51,7 @@ function Calendar() {
         try {
           setLoading(true);
           setError(false);
-          const { data } = await axios.get('http://localhost:3001/schedules/' + scheduleId);
+          const { data } = await axios.get('http://localhost:3001/schedules/' + scheduleId, {}, headers);
           setScheduleData(data);
           const events = data.events.length > 0 ? formatEvents(data.events) : {minDate: new Date(), events:[]};
           setEvents(events);

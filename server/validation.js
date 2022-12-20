@@ -12,7 +12,7 @@ module.exports = {
   },
 
   checkString(strVal, varName) {
-    if (!strVal) throw `Error: You must supply a ${varName}!`;
+    if (!strVal || strVal == 'undefined') throw `Error: You must supply a ${varName}!`;
     if (typeof strVal !== 'string') throw `Error: ${varName} must be a string!`;
     strVal = strVal.trim();
     if (strVal.length === 0)

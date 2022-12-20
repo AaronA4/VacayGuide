@@ -6,6 +6,7 @@ import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import ListGroup from 'react-bootstrap/ListGroup';
 import {AuthContext} from '../firebase/Auth';
+import { getSessionToken } from '../firebase/FirebaseFunctions';
 import 'bootstrap/dist/css/bootstrap.css';
 
 function Event () {
@@ -16,6 +17,11 @@ function Event () {
     const [userData, setUserData] = useState(undefined);
     const [showBtnToggle, setBtnToggle] = useState(false);
     const {currentUser} = useContext(AuthContext);
+    const accessToken = getSessionToken();
+    const headers = {headers: {
+      email : currentUser.email,
+      accesstoken: accessToken
+    }};    
     let {scheduleId, eventId} = useParams();
 
     useEffect(() => {
@@ -81,8 +87,8 @@ function Event () {
             height: '30vh'
         },
         crdImg: {
-            'max-width': '25vw',
-            'max-height': '50vh'
+            maxWidth: '25vw',
+            maxHeight: '50vh'
         }
     }
 
