@@ -74,7 +74,7 @@ function MyInvites() {
         return (
           // Show Invites List with detailed attributes 
           <div>
-            <h2>This is the Invitation page</h2>
+            <h2>Current Invites</h2>
             {inviteCards}
           </div>
         );

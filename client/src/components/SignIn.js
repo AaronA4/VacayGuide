@@ -3,7 +3,6 @@ import {Navigate} from 'react-router-dom';
 import {AuthContext} from '../firebase/Auth';
 import {
   doSignInWithEmailAndPassword,
-  doPasswordReset,
 } from '../firebase/FirebaseFunctions';
 
 function SignIn() {
@@ -19,18 +18,6 @@ function SignIn() {
     }
   };
 
-  const passwordReset = (event) => {
-    event.preventDefault();
-    let email = document.getElementById('email').value;
-    if (email) {
-      doPasswordReset(email);
-      alert('Password reset email was sent');
-    } else {
-      alert(
-        'Please enter an email address below before you click the forgot password link'
-      );
-    }
-  };
   if (currentUser) {
     return <Navigate to='/home' />;
   }
@@ -65,12 +52,7 @@ function SignIn() {
           </label>
         </div>
         <button type='submit'>Log in</button>
-
-        <button className='forgotPassword' onClick={passwordReset}>
-          Forgot Password
-        </button>
       </form>
-
       <br />
     </div>
   );

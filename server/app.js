@@ -53,6 +53,8 @@ app.use('/login', decodeToken);
 app.use('/signup', decodeToken);
 app.use('/logout', decodeToken);
 app.use('/changeUserPW', decodeToken);
+app.use('/changeUserInfo', decodeToken);
+
 
 
 configRoutes(app);

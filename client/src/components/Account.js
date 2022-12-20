@@ -1,6 +1,7 @@
 import React, {useContext, useState} from 'react';
 import '../App.css';
 import ChangePassword from './ChangePassword';
+import ChangeUserInfo from './ChangeUserInfo';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import {AuthContext} from '../firebase/Auth';
@@ -8,6 +9,7 @@ import {AuthContext} from '../firebase/Auth';
 function Account() {
   const {currentUser} = useContext(AuthContext);
   const [showChangePW, setShowChangePW] = useState(false);
+  const [showChangeInfo, setShowChangeInfo] = useState(false);
 
   let User = () => {return (
         <Card id={currentUser.uid}>
@@ -19,20 +21,53 @@ function Account() {
     );
   }
 
-  if(!showChangePW){
+
+  if(!showChangePW && ! showChangeInfo){
     return (
       <div class="container mr-auto">
-        <h2>Account Page</h2>
+        <h2>Account Info</h2>
         <User />
-        <Button onClick={()=> setShowChangePW(!showChangePW)}>Change Password</Button>
+        <Button onClick={()=> {
+          setShowChangePW(false);
+          setShowChangeInfo(true)}
+          }>Change User Info</Button>
+        <Button onClick={()=> {
+          setShowChangePW(true);
+          setShowChangeInfo(false)}
+          }>Change Password</Button>
       </div>
     );
-  }else {
+  }else if (showChangeInfo) {
+    return(
+    <div class="container mr-auto">
+        <h2>Account Info</h2>
+        <User />
+        <Button onClick={()=> {
+          setShowChangePW(false);
+          setShowChangeInfo(false)}
+          }>Change User Info</Button>
+        <Button onClick={()=> {
+          setShowChangePW(true);
+          setShowChangeInfo(false)}
+          }>Change Password</Button>
+        <div class="container mr-auto">
+          <ChangeUserInfo />
+        </div>
+      </div>
+    );
+  } else {
     return (
       <div class="container mr-auto">
-        <h2>Account Page</h2>
-        <User/>
-        <Button onClick={()=> setShowChangePW(!showChangePW)}>Change Password</Button>
+        <h2>Account Info</h2>
+        <User />
+        <Button onClick={()=> {
+          setShowChangePW(false);
+          setShowChangeInfo(true)}
+          }>Change User Info</Button>
+        <Button onClick={()=> {
+          setShowChangePW(false);
+          setShowChangeInfo(false)}
+          }>Change Password</Button>
         <div class="container mr-auto">
           <ChangePassword />
         </div>

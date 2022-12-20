@@ -67,6 +67,24 @@ router.post('/changeUserPW', async (req,res) => {
     }
 });
 
+router.post('/changeUserInfo', async (req,res) => {
+    const userBody = req.body;
+    try{
+        let {email, firstName, lastName} = userBody;
+        email = validation.checkEmail(email, 'User email');
+        firstName = validation.checkString(firstName, 'User first name');
+        lastName = validation.checkString(lastName, 'User last name');
+        let user = await userData.getUserByEmail(email);
+        user.firstName = firstName;
+        user.lastName = lastName;
+        user = userData.updateUser(user._id.toString(),user);
+        res.status(200).json(user);
+    }catch(e){
+        console.log(e);
+        return res.status(500).json({error: e});
+    }
+});
+
 router.get('/logout', async (req,res) => {
     try {
         console.log("Log out user: " + req.session.user.email);

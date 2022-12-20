@@ -45,6 +45,22 @@ async function doChangePassword(email, oldPassword, newPassword) {
   await doSignOut();
 }
 
+async function doChangeUserInfo(email, firstName, lastName) {
+  await firebase.auth().currentUser.updateProfile({ displayName: firstName + " " + lastName });
+  const accessToken = getSessionToken();
+  const formData = {
+    email: email,
+    firstName: firstName,
+    lastName: lastName
+  };
+  await axios({
+    method: 'post',
+    url: 'http://localhost:3001/changeUserInfo',
+    data: formData,
+    headers: {email: email, accesstoken: accessToken}
+  });
+}
+
 async function doSignInWithEmailAndPassword(email, password) {
   await firebase.auth().signInWithEmailAndPassword(email, password);
   const accessToken = getSessionToken();
@@ -72,14 +88,6 @@ async function doSignInWithEmailAndPassword(email, password) {
   });
 }
 
-async function doPasswordReset(email) {
-  await firebase.auth().sendPasswordResetEmail(email);
-}
-
-async function doPasswordUpdate(password) {
-  await firebase.auth().updatePassword(password);
-}
-
 async function doSignOut() {
   await firebase.auth().signOut();
   axios({
@@ -100,9 +108,8 @@ function getSessionToken(){
 export {
   doCreateUserWithEmailAndPassword,
   doSignInWithEmailAndPassword,
-  doPasswordReset,
-  doPasswordUpdate,
   doSignOut,
   doChangePassword,
+  doChangeUserInfo,
   getSessionToken
 };
