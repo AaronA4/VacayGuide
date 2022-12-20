@@ -107,7 +107,7 @@ router.get("/users/:searchTerm", async (req,res) => {
 router.get("/userId/:userEmail", async (req,res) => {
     const userBody = req.body;
     try {
-        let {email} = userBody;
+        let email = req.params.userEmail;
         email = validation.checkEmail(email);
         let user = await userData.getUserByEmail(email);
         return res.status(200).json(user._id);
