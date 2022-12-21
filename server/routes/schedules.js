@@ -134,37 +134,37 @@ router.post('/:scheduleId/invite/', async (req,res) => {
 });
 
 
-router.get('/:scheduleId/chat', async (req,res) => {
-    if (!req.params.scheduleId) {
-        res.status(400).json({ error: 'Schedule ID not provided.' });
-    };
-    // user validation req
-    try {
-        const schedule = await scheduleData.getScheduleById(req.params.scheduleId);
-        const chat = schedule.chat;
-        io.on('connection', (socket) => {
-            console.log('New client connected.', socket.id);
-            socket.on('user_join', ({name,room}) => {
-                console.log('User '+ name +' has joined room '+ room +'.'); // State may possibly include 'group' variable for different groups going to same event.
-                socket.join(room);
-                socket.to(room).emit('user_join', name);
-            });
+// router.get('/:scheduleId/chat', async (req,res) => {
+//     if (!req.params.scheduleId) {
+//         res.status(400).json({ error: 'Schedule ID not provided.' });
+//     };
+//     // user validation req
+//     try {
+//         const schedule = await scheduleData.getScheduleById(req.params.scheduleId);
+//         const chat = schedule.chat;
+//         io.on('connection', (socket) => {
+//             console.log('New client connected.', socket.id);
+//             socket.on('user_join', ({name,room}) => {
+//                 console.log('User '+ name +' has joined room '+ room +'.'); // State may possibly include 'group' variable for different groups going to same event.
+//                 socket.join(room);
+//                 socket.to(room).emit('user_join', name);
+//             });
 
-            socket.on('message', ({name, message, room}) => {
-                console.log(name, message, socket.id, room);
-                io.to(room).emit('message', {name, message});
-            });
+//             socket.on('message', ({name, message, room}) => {
+//                 console.log(name, message, socket.id, room);
+//                 io.to(room).emit('message', {name, message});
+//             });
 
-            socket.on('disconnect', ({name,room}) => {
-                console.log('User '+ name +' has left room '+ room +'.');
-                socket.to(room).emit('disconnect', name);
-            });
-        });
-        res.status(200).json(chat);
-    } catch (e) {
-        res.status(400).json({ error: 'Failed connection.' });
-    }
-});
+//             socket.on('disconnect', ({name,room}) => {
+//                 console.log('User '+ name +' has left room '+ room +'.');
+//                 socket.to(room).emit('disconnect', name);
+//             });
+//         });
+//         res.status(200).json(chat);
+//     } catch (e) {
+//         res.status(400).json({ error: 'Failed connection.' });
+//     }
+// });
 
 router.get('/:scheduleId/:eventId', async (req,res) => {
     let scheduleId;

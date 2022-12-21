@@ -133,7 +133,7 @@ function EditEvent() {
     }else {
       return (
         <div>
-          <p>Edit Event</p>
+          <h2>Edit Event</h2>
           {customError && <p>{customError}</p>}
           <Form noValidate validated={validated} onSubmit={handleSubmit}>
             <Form.Group className="mb-3" controlId="name">
