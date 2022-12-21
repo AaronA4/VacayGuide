@@ -20,7 +20,8 @@ function Event () {
     const accessToken = getSessionToken();
     const headers = {headers: {
       email : currentUser.email,
-      accesstoken: accessToken
+      accesstoken: accessToken,
+      'Access-Control-Allow-Origin':'*'
     }};    
     let {scheduleId, eventId} = useParams();
 
