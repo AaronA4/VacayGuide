@@ -25,27 +25,32 @@ function Schedules() {
     accesstoken: accessToken
   }};
 
+	async function fetchData() {
+		try {
+			setLoading(true);
+			const {data} = await axios.get(
+				'http://localhost:3001/schedules',
+				headers
+			);
+			console.log(data);
+			setSchedulesData(data);
+			setLoading(false);
+		} catch (e) {
+			setError(true);
+			setLoading(false);
+			console.log(e);
+		}
+	};
   useEffect(() => {
     console.log('on load useEffect');
-    async function fetchData() {
-      try {
-        setLoading(true);
-        const {data} = await axios.get(
-          'http://localhost:3001/schedules',
-          headers
-        );
-        console.log(data);
-        setSchedulesData(data);
-        setLoading(false);
-      } catch (e) {
-        setError(true);
-        setLoading(false);
-        console.log(e);
-      }
-    };
     fetchData();
   }, []);
   
+	function handler(){
+		fetchData();
+ }
+
+
   const buildCard = (schedule) => {
     return (
       <Card key={schedule._id}>
@@ -86,7 +91,7 @@ function Schedules() {
         <h1>Current Vacay Schedules</h1>
         <Button onClick={()=> setBtnToggle(!addBtnToggle)}>Create Schedule</Button>
         <br />
-        {addBtnToggle && <AddSchedule />}
+        {addBtnToggle && <AddSchedule handler={handler}/>}
         <br />
         <div className="container">
           <div className="row">
