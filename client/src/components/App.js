@@ -6,7 +6,6 @@ import Home from './Home';
 import Landing from './Landing';
 import Schedules from './Schedules';
 import Schedule from './Schedule';
-import Chatroom from './Chatroom';
 import AddSchedule from './AddSchedule';
 import Navigation from './Navigation';
 import SignIn from './SignIn';
@@ -41,7 +40,6 @@ function App() {
           <Route path='/schedules' element={<PrivateRoute />}>
             <Route path='/schedules' element={<Schedules />} />
             <Route path='/schedules/:scheduleId' element={<Schedule />} />
-            <Route path='/schedules/:scheduleId/chat' element={<Chatroom />} />
             <Route path='/schedules/createSchedule' element={<AddSchedule />} />
             <Route path='/schedules/:scheduleId/invite' element={<InvitedUsers />} />
             <Route path='/schedules/:scheduleId/calendar' element={<Calendar />} />

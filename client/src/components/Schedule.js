@@ -96,9 +96,6 @@ function Schedule(props) {
       <div className="content">
         <br />
         <h2>{scheduleData.name}</h2>
-        <Link to={`/schedules/${params.scheduleId}/chat`}>
-          Enter Chatroom
-        </Link>
         <br />
         <Link to={`/schedules/${params.scheduleId}/invite`}>
           View Attendees
