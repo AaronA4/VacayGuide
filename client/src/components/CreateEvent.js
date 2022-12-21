@@ -8,7 +8,7 @@ import {AuthContext} from '../firebase/Auth';
 import { getSessionToken } from '../firebase/FirebaseFunctions';
 import { checkString, checkCost, checkDate } from '../validation.js';
 
-function CreateEvent() {
+function CreateEvent({handler}) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [customError, setCustomError] = useState(undefined);
@@ -102,6 +102,7 @@ function CreateEvent() {
           form_data,
           headers
         )
+        handler();
         // let newEvent = await axios({
         //   method: 'post',
         //   url: '/schedules/' + scheduleId + '/createEvent',

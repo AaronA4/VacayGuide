@@ -5,10 +5,10 @@ import '../App.css';
 function Landing() {
   return (
     <div class="container">
-      <h1>Weclome to Vacay Guide</h1>
+      <h1>Welcome to Vacay Guide</h1>
       <p>
-        The Goal of Vacay is to falicilitate group activites
-        and vactions to help Organize and share vaction events
+        The Goal of Vacay is to facilitate group activites
+        and vacations to help organize and share vacation events
         between a group of users.
       </p>
     </div>

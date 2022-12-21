@@ -142,10 +142,8 @@ router.get('/:scheduleId/chat', async (req,res) => {
     try {
         const schedule = await scheduleData.getScheduleById(req.params.scheduleId);
         const chat = schedule.chat;
-        res.send(200).json(chat);
         io.on('connection', (socket) => {
             console.log('New client connected.', socket.id);
-
             socket.on('user_join', ({name,room}) => {
                 console.log('User '+ name +' has joined room '+ room +'.'); // State may possibly include 'group' variable for different groups going to same event.
                 socket.join(room);
@@ -153,7 +151,7 @@ router.get('/:scheduleId/chat', async (req,res) => {
             });
 
             socket.on('message', ({name, message, room}) => {
-                // console.log(name, message, socket.id, room);
+                console.log(name, message, socket.id, room);
                 io.to(room).emit('message', {name, message});
             });
 
@@ -162,6 +160,7 @@ router.get('/:scheduleId/chat', async (req,res) => {
                 socket.to(room).emit('disconnect', name);
             });
         });
+        res.status(200).json(chat);
     } catch (e) {
         res.status(400).json({ error: 'Failed connection.' });
     }

@@ -1,29 +1,47 @@
 import axios from 'axios';
 import React, {useEffect, useRef, useState, useContext} from 'react';
+import {Link, useParams} from 'react-router-dom';
+import firebase from 'firebase/app';
+import { getSessionToken } from '../firebase/FirebaseFunctions';
 import {AuthContext} from '../firebase/Auth';
 import io from 'socket.io-client';
+import ListGroup from 'react-bootstrap/ListGroup';
+import 'bootstrap/dist/css/bootstrap.css';
 
 function Chatroom(props) {
+    
     const currentUser = useContext(AuthContext);
     const [state, setState] = useState({message: '', name: '', schedule: ''});
     const [chat, setChat] = useState([]);
     const socketRef = useRef();
     let {scheduleId} = useParams();
 
+    const email = firebase.auth().currentUser.email;
+    const accessToken = getSessionToken();
+    const headers = {headers: {
+      email : email,
+      accesstoken: accessToken
+    }};
+
+    // let socketio = io(`http://localhost:3001/schedules/${scheduleId}/chat`);
+    
     useEffect(() => {
         console.log('On Chatroom load useEffect')
         async function fetchData() {
             try {
-                const {data: chatLog} = await axios.get(`http://localhost:3000/${scheduleId}/chat`);
-                setChat(chatLog);
-                setLoading(false);
+                
+                const { data } = await axios.get(
+                    `http://localhost:3001/schedules/${scheduleId}/chat`,
+                    headers
+                );
+                setChat(data);
             } catch (e) {
                 console.log(e);
             }
         }
-        fetchData();
-        socketRef.current = io('/')
+        socketRef.current = io(`http://localhost:3001/schedules/${scheduleId}/chat`);
         return () => {
+            console.log("HERE");
             socketRef.current.disconnect();
         };
     }, [scheduleId]);
@@ -33,8 +51,10 @@ function Chatroom(props) {
             setChat([...chat, {name, message}]);
             async function updateLog() {
                 try {
-                    const {data: chatLog} = await axios.patch(`http://localhost:3000/${scheduleId}`,
-                        { chat: chat }
+                    const { data } = await axios.patch(
+                        `http://localhost:3000/schedules/${scheduleId}`,
+                        chat,
+                        headers
                     );
                 } catch (e) {
                     console.log(e);
@@ -50,10 +70,6 @@ function Chatroom(props) {
         });
     }, [chat])
 
-    const userJoin = (name, schedule) => {
-        socketRef.current.emit('user_join', ({name, room}));
-    };
-
     const onMessageSubmit = (e) => {
         let msgEle = document.getElementById('message');
         setState({...state, [msgEle.name]: msgEle.value});
@@ -68,48 +84,58 @@ function Chatroom(props) {
         msgEle.focus();
     };
 
-    const renderChat = () => {
-        return chat.map(({name, message}, index) => {
-            <div key={index}>
-                <h4>
-                    {name}: <span>{message}</span>
-                </h4>
-            </div>
-        });
-    };
+    // useEffect(() => {
+    //     socketio.on('chat', senderChats => {
+    //         setChat(senderChats)
+    //     })
+    // });
 
-    if (loading) {
-        return (
-            <div>
-              <h2>Loading. . . .</h2>
-            </div>
-        );
-    } else {
-        return (
-            <div>
-                <div class="content">
-                    <br />
-                    <h2>Chatroom</h2>
-                    <div class="container">
-                        <h3 class="container-title">Log</h3>
-                        {renderChat()}
-                    </div>
-                    <form onSubmit={onMessageSubmit}>
-                        <h2>Messenger</h2>
-                        <div>
-                            <input
-                                name='message'
-                                id='message'
-                                variant='outlined'
-                                label='Message'
-                            />
-                        </div>
-                        <button type='submit'>Send</button>
-                    </form>
+    // function sendChatToSocket(chat){
+    //     socketio.emit("chat", chat)
+    // }
+
+    // function addMessage(chat){
+    //     const newChat = 
+    // }
+    
+    const buildChat = (log) => {
+        let chatLog = [];
+        for (let chat of log) {
+            chatLog.push(<ListGroup.Item>{chat}</ListGroup.Item>)
+        }
+        return chatLog
+        // <div key={index}>
+        //     <h4>
+        //         {log.name}: <span>{log.message}</span>
+        //     </h4>
+        // </div>
+    };
+    
+    return (
+        <div>
+            <div class="content">
+                <br />
+                <h2>Chatroom</h2>
+                <div class="container">
+                    <h3 class="container-title">Log</h3>
+                    {buildChat(chat)}
                 </div>
+                <form onSubmit={onMessageSubmit}>
+                    <h2>Messenger</h2>
+                    <div>
+                        <input
+                            name='message'
+                            id='message'
+                            variant='outlined'
+                            label='Message'
+                        />
+                    </div>
+                    <button type='submit'>Send</button>
+                </form>
             </div>
-        )
-    }
+        </div>
+    )
+
 };
 
 export default Chatroom;

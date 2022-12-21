@@ -53,13 +53,28 @@ function MyInvites() {
         pullInvites();
       }
 
+      const displayallEvents = (events) => {
+        for(let i=0; i<events.length; i++) {
+          return (
+            <div>
+              <Card.Img src={"http://localhost:3001/public/images/"+events[i].image}></Card.Img>
+              <Card.Text>Event Name: {events[i].name}</Card.Text>
+              <Card.Text>Event Description: {events[i].description}</Card.Text>
+              <Card.Text>Event Cost: {events[i].cost}</Card.Text>
+              <Card.Text>Event Start Time: {events[i].startTime}</Card.Text>
+              <Card.Text>Event End Time: {events[i].endTime}</Card.Text>
+            </div>
+          )
+        }
+      }
+
       const buildCard = (invite) => {
         return(
           <Card id = {invite.id} key={invite.id}>
             <Card.Body>
               <Card.Title>{invite.name}</Card.Title>
               <Card.Text>{`${invite.creator.firstName} ${invite.creator.lastName}`}</Card.Text>
-              <Card.Text>Events: {invite.events}</Card.Text>
+              {displayallEvents(invite.events)}
             </Card.Body>
             <button onClick={() => acceptInvitation(invite.id)}>Accept</button> 
             <button onClick={() => denyInvitation(invite.id)}>Deny</button>

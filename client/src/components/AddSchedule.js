@@ -4,7 +4,7 @@ import {AuthContext} from '../firebase/Auth';
 import firebase from 'firebase/app';
 import { getSessionToken } from '../firebase/FirebaseFunctions';
 
-function AddSchedule() {
+function AddSchedule({handler}) {
 	const {currentUser} = useContext(AuthContext);
 		const [name,setName] = useState("");
 		const [userEmail,setUserEmail] = useState(currentUser.email);
@@ -26,7 +26,8 @@ function AddSchedule() {
 				console.log(currentUser);
 			try {
 				let newSchedule = await axios.post("http://localhost:3001/schedules/",{name,userEmail},headers);
-		} catch (e) {
+				handler();
+			} catch (e) {
 				console.log(e);
 		}
     };
@@ -51,7 +52,8 @@ function AddSchedule() {
 								<input type="submit"/>
             </form>
         </div>
-    )
+    );
+		
 }
 
 export default AddSchedule;
