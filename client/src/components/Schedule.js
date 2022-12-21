@@ -9,6 +9,7 @@ import { getSessionToken } from '../firebase/FirebaseFunctions';
 import {AuthContext} from '../firebase/Auth';
 import CreateEvent from './CreateEvent';
 import InvitedUsers from './InvitedUsers';
+import Calendar from './Calendar'
 import '../App.css';
 
 function Schedule(props) {
@@ -17,6 +18,7 @@ function Schedule(props) {
   const [scheduleData, setScheduleData] = useState(undefined);
   const [eventData, setEventData] = useState(undefined);
   const [addBtnToggle, setAddBtnToggle] = useState(false);
+  const [showBtnToggle, setShowBtnToggle] = useState(false);
   const {currentUser} = useContext(AuthContext);
   let params = useParams();
   let list = null;
@@ -28,28 +30,31 @@ function Schedule(props) {
     accesstoken: accessToken
   }};
 
+  async function fetchData() {
+    try {
+      setLoading(true);
+      const {data: schedule} = await axios.get(
+        `http://localhost:3001/schedules/${params.scheduleId}`,
+        headers
+      )
+      setScheduleData(schedule);
+      setEventData(schedule.events);
+      console.log(schedule.events);
+      setLoading(false);
+    } catch (e) {
+      setError(true);
+      setLoading(false);
+      console.log(e);
+    }
+  }
   useEffect(() => {
     console.log('Schedule useEffect')
-    async function fetchData() {
-      try {
-        setLoading(true);
-        const {data: schedule} = await axios.get(
-          `http://localhost:3001/schedules/${params.scheduleId}`,
-          headers
-        )
-        setScheduleData(schedule);
-        setEventData(schedule.events);
-        console.log(schedule.events);
-        setLoading(false);
-      } catch (e) {
-        setError(true);
-        setLoading(false);
-        console.log(e);
-      }
-    }
     fetchData();
   }, [params.scheduleId]);
-
+  
+  function handler(){
+		fetchData();
+  }
 
   const isEmpty = (lst) => {
     if (lst.length === 0) return true;
@@ -90,13 +95,21 @@ function Schedule(props) {
       <div className="content">
         <br />
         <h2>{scheduleData.name}</h2>
+        <Link to={`/schedules/${params.scheduleId}/chat`}>
+          Enter Chatroom
+        </Link>
+        <br />
         <Link to={`/schedules/${params.scheduleId}/invite`}>
           View Attendees
         </Link>
         <div className="container">
           <h3 className="container-title">Events</h3>
+          <Button onClick={() => setShowBtnToggle(!showBtnToggle)}>Show Calendar</Button>
+          {showBtnToggle && <Calendar />}
+          <br />
+          <br />
           <Button onClick={() => setAddBtnToggle(!addBtnToggle)}>Add Event</Button>
-          {addBtnToggle && <CreateEvent />}
+          {addBtnToggle && <CreateEvent handler={handler}/>}
           <br />
           <br />
           <div className="row justify-content-center">
@@ -109,4 +122,3 @@ function Schedule(props) {
 }
   
 export default Schedule;
-  

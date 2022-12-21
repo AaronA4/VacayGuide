@@ -7,8 +7,6 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import { getSessionToken } from '../firebase/FirebaseFunctions';
 import {AuthContext} from '../firebase/Auth';
 
-
-
 function Calendar() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
@@ -52,7 +50,7 @@ function Calendar() {
         try {
           setLoading(true);
           setError(false);
-          const { data } = await axios.get('http://localhost:3001/schedules/' + scheduleId, {}, headers);
+          const { data } = await axios.get('http://localhost:3001/schedules/' + scheduleId, headers);
           setScheduleData(data);
           const events = data.events.length > 0 ? formatEvents(data.events) : {minDate: new Date(), events:[]};
           setEvents(events);
