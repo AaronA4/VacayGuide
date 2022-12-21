@@ -13,7 +13,8 @@ function AddSchedule() {
     const accessToken = getSessionToken();
     const headers = {headers: {
       email : email,
-      accesstoken: accessToken
+      accesstoken: accessToken,
+      'Access-Control-Allow-Origin':'*'
     }};
 
 

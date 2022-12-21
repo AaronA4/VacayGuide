@@ -18,7 +18,8 @@ function Calendar() {
     const accessToken = getSessionToken();
     const headers = {headers: {
       email : currentUser.email,
-      accesstoken: accessToken
+      accesstoken: accessToken,
+      'Access-Control-Allow-Origin':'*'
     }};
     const navigate = useNavigate();
     let {scheduleId} = useParams();

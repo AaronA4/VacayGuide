@@ -1,1 +1,18 @@
-placeholder
+To run locally, here are some steps:
+
+1. Download graphicsmagick.
+  a. (Windows) 
+    1. Download one of the .exe files from this link; https://sourceforge.net/projects/graphicsmagick/files/graphicsmagick-binaries/1.3.36/
+    2. Run .exe file
+    3. Restart computer
+  b. (MacOS)
+    1. Run `brew install graphicsmagick`
+    2. Restart computer
+  c. (Linux)
+    1. Download an archive file from this link; https://sourceforge.net/projects/graphicsmagick/files/graphicsmagick/1.3.36/
+    2. Follow the steps here; http://www.graphicsmagick.org/INSTALL-unix.html
+2. add the .env file to both client and server folders.
+3. Run `npm i` in both client and server folders.
+4. Run `npm run seed` in server folder
+5. Run `npm start` in server folder and then client folder
+6. Head to http://locahost:3000/
