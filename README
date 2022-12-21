@@ -16,3 +16,4 @@ To run locally, here are some steps:
 4. Run `npm run seed` in server folder
 5. Run `npm start` in server folder and then client folder
 6. Head to http://locahost:3000/
+7. To test remotely, check the AWSEC2 instance at http://ec2-44-203-54-195.compute-1.amazonaws.com:3000/
