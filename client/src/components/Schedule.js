@@ -89,12 +89,12 @@ function Schedule(props) {
     return (
       <div className="content">
         <br />
-        <h2>{scheduleData.name}</h2>
+        <h1>{scheduleData.name}</h1>
         <Link to={`/schedules/${params.scheduleId}/invite`}>
           View Attendees
         </Link>
         <div className="container">
-          <h3 className="container-title">Events</h3>
+          <h2 className="container-title">Events</h2>
           <Button onClick={() => setAddBtnToggle(!addBtnToggle)}>Add Event</Button>
           {addBtnToggle && <CreateEvent />}
           <br />
