@@ -43,9 +43,17 @@
 	padding: 0;
 }
 
-.nav-item {
+li.nav-item {
 	color: black
 }
+
+a.nav-link {
+	color: black
+}
+
+nav .navbar-nav li a{
+	color: black !important;
+	}
 
 .navigation a:link,
 .navigation a:visited {
