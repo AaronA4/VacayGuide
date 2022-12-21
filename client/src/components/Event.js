@@ -61,13 +61,18 @@ function Event () {
     const join = async (event) => {
         event.attendees.push(currentUser.email)
         let body =  {userId: currentUser.email, attendees: event.attendees};
-        let newEvent = await axios({
-            method: 'patch',
-            url: '/schedules/' + scheduleId + '/' + eventId,
-            baseURL: 'http://localhost:3001',
-            headers: headers,
-            data: body
-        })
+        let newEvent = await axios.patch(
+            `http://localhost:3001/schedules/${scheduleId}/${eventId}`,
+            body,
+            headers
+        );
+        // let newEvent = await axios({
+        //     method: 'patch',
+        //     url: '/schedules/' + scheduleId + '/' + eventId,
+        //     baseURL: 'http://localhost:3001',
+        //     headers: headers,
+        //     data: body
+        // })
         setAttending(true);
     }
 
@@ -75,14 +80,18 @@ function Event () {
         let attendeeIndex = event.attendees.findIndex(attendee => attendee == currentUser.email);
         event.attendees.splice(attendeeIndex, 1);
         let body =  {userId: currentUser.email, attendees: event.attendees};
-        
-        let newEvent = await axios({
-            method: 'patch',
-            url: '/schedules/' + scheduleId + '/' + eventId,
-            baseURL: 'http://localhost:3001',
-            headers: headers,
-            data: body
-        })
+        let newEvent = await axios.patch(
+            `http://localhost:3001/schedules/${scheduleId}/${eventId}`,
+            body,
+            headers
+        );
+        // let newEvent = await axios({
+        //     method: 'patch',
+        //     url: '/schedules/' + scheduleId + '/' + eventId,
+        //     baseURL: 'http://localhost:3001',
+        //     headers: headers,
+        //     data: body
+        // })
         setAttending(false);
     }
 

@@ -6,13 +6,14 @@ import { getSessionToken } from '../firebase/FirebaseFunctions';
 import {AuthContext} from '../firebase/Auth';
 import io from 'socket.io-client';
 import ListGroup from 'react-bootstrap/ListGroup';
+import Button from 'react-bootstrap/Button';
 import 'bootstrap/dist/css/bootstrap.css';
 
 function Chatroom(props) {
-    
     const currentUser = useContext(AuthContext);
     const [state, setState] = useState({message: '', name: '', schedule: ''});
     const [chat, setChat] = useState([]);
+    const [toggleJoin, setToggleJoin] = useState(true);
     const socketRef = useRef();
     let {scheduleId} = useParams();
 
@@ -29,7 +30,6 @@ function Chatroom(props) {
         console.log('On Chatroom load useEffect')
         async function fetchData() {
             try {
-                
                 const { data } = await axios.get(
                     `http://localhost:3001/schedules/${scheduleId}/chat`,
                     headers
@@ -111,27 +111,44 @@ function Chatroom(props) {
         // </div>
     };
     
+    const doUserJoin = ({name, room}) => {
+        socketRef.current.emit('user_join', ({name, room}));
+    };
+
+    const doUserLeave = ({name, room}) => {
+        socketRef.current.emit('disconnect', ({name, room}));
+    }
+
     return (
         <div>
             <div class="content">
                 <br />
                 <h2>Chatroom</h2>
-                <div class="container">
-                    <h3 class="container-title">Log</h3>
-                    {buildChat(chat)}
-                </div>
-                <form onSubmit={onMessageSubmit}>
-                    <h2>Messenger</h2>
-                    <div>
-                        <input
-                            name='message'
-                            id='message'
-                            variant='outlined'
-                            label='Message'
-                        />
+                {toggleJoin &&
+                    <Button onClick={() => setToggleJoin(!toggleJoin)}>Join</Button>
+                }
+                {!toggleJoin &&
+                <>
+                    <Button onClick={() => setToggleJoin(!toggleJoin)}>Leave</Button>
+                    <div class="container">
+                        <h3 class="container-title">Log</h3>
+                        {buildChat(chat)}
                     </div>
-                    <button type='submit'>Send</button>
-                </form>
+                    <form onSubmit={onMessageSubmit}>
+                        <h2>Messenger</h2>
+                        <div>
+                            <input
+                                name='message'
+                                id='message'
+                                variant='outlined'
+                                label='Message' />
+                        </div>
+                        <button type='submit'>Send</button>
+                    </form>
+                </>  
+                }
+                
+                
             </div>
         </div>
     )

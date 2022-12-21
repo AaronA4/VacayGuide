@@ -6,6 +6,8 @@ const session = require('express-session');
 const cors = require('cors');
 var path = require('path');
 const { decodeToken } = require('./middleware');
+const server = require('http').createServer(express);
+const io = require('socket.io')(server);
 
 const port = 3001;
 
@@ -13,10 +15,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 
 
-app.use(cors({
-  credentials: true,
-  origin: "http://localhost:3000",
-}));
+app.use(cors());
 
 
 app.use(session({
@@ -56,6 +55,24 @@ app.use(async (req, res, next) => {
   next();
 });
 
+io.on('connection', (socket) => {
+  console.log('new client connected', socket.id);
+
+  socket.on('user_join', ({name, room}) => {
+    console.log('A user joined ' + room + ' their name is ' + name);
+    socket.join(room);
+    socket.to(room).emit('user_join', {name, room});
+  });
+
+  socket.on('message', ({name, message, room}) => {
+    console.log(name, message, socket.id);
+    io.to(room).emit('message', {name, message});
+  });
+
+  socket.on('disconnect', () => {
+    console.log('Disconnect Fired');
+  });
+});
 
 configRoutes(app);
 
