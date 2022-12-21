@@ -9,6 +9,7 @@ import ListGroup from 'react-bootstrap/ListGroup';
 import 'bootstrap/dist/css/bootstrap.css';
 
 function Chatroom(props) {
+    
     const currentUser = useContext(AuthContext);
     const [state, setState] = useState({message: '', name: '', schedule: ''});
     const [chat, setChat] = useState([]);
@@ -21,11 +22,14 @@ function Chatroom(props) {
       email : email,
       accesstoken: accessToken
     }};
+
+    // let socketio = io(`http://localhost:3001/schedules/${scheduleId}/chat`);
     
     useEffect(() => {
         console.log('On Chatroom load useEffect')
         async function fetchData() {
             try {
+                
                 const { data } = await axios.get(
                     `http://localhost:3001/schedules/${scheduleId}/chat`,
                     headers
@@ -35,9 +39,9 @@ function Chatroom(props) {
                 console.log(e);
             }
         }
-        fetchData();
-        socketRef.current = io('/')
+        socketRef.current = io(`http://localhost:3001/schedules/${scheduleId}/chat`);
         return () => {
+            console.log("HERE");
             socketRef.current.disconnect();
         };
     }, [scheduleId]);
@@ -66,10 +70,6 @@ function Chatroom(props) {
         });
     }, [chat])
 
-    const userJoin = (name, schedule) => {
-        socketRef.current.emit('user_join', ({name, schedule}));
-    };
-
     const onMessageSubmit = (e) => {
         let msgEle = document.getElementById('message');
         setState({...state, [msgEle.name]: msgEle.value});
@@ -83,6 +83,20 @@ function Chatroom(props) {
         msgEle.value = '';
         msgEle.focus();
     };
+
+    // useEffect(() => {
+    //     socketio.on('chat', senderChats => {
+    //         setChat(senderChats)
+    //     })
+    // });
+
+    // function sendChatToSocket(chat){
+    //     socketio.emit("chat", chat)
+    // }
+
+    // function addMessage(chat){
+    //     const newChat = 
+    // }
     
     const buildChat = (log) => {
         let chatLog = [];

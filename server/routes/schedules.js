@@ -144,7 +144,6 @@ router.get('/:scheduleId/chat', async (req,res) => {
         const chat = schedule.chat;
         io.on('connection', (socket) => {
             console.log('New client connected.', socket.id);
-
             socket.on('user_join', ({name,room}) => {
                 console.log('User '+ name +' has joined room '+ room +'.'); // State may possibly include 'group' variable for different groups going to same event.
                 socket.join(room);
@@ -152,7 +151,7 @@ router.get('/:scheduleId/chat', async (req,res) => {
             });
 
             socket.on('message', ({name, message, room}) => {
-                // console.log(name, message, socket.id, room);
+                console.log(name, message, socket.id, room);
                 io.to(room).emit('message', {name, message});
             });
 
