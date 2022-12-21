@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import '../App.css';
 import { AuthContext } from '../firebase/Auth';
-import Account from './Account';
 import MyInvites from './MyInvites';
 import Card from 'react-bootstrap/Card';
 import Schedules from './Schedules';
@@ -26,10 +25,6 @@ function Home() {
     fetchData();
   }, []);
 
-  const doReload = () => {
-    setLoading(true);
-    setLoading(false);
-  }
   if(loading){
     console.log("HERE");
     return(
